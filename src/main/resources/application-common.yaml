@@ -1,0 +1,6 @@
+spring:
+  config:
+    activate:
+      on-profile: common
+
+#  JWT / S3 등 추가
