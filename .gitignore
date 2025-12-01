@@ -50,5 +50,4 @@ Desktop.ini
 .env
 
 ### Local env only ###
-application-local.yaml
 application.yaml
