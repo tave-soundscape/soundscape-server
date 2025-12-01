@@ -1,5 +1,6 @@
 package com.soundscape.common.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,10 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommonResponse<T> {
+
     private Result result;
-    private T data;
-    private String message;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String errorCode;
+    private String message;
+    private T data;
 
     public static <T> CommonResponse<T> success(T data, String message) {
         return CommonResponse.<T>builder()
