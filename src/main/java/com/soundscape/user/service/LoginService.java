@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
+import se.michaelthelin.spotify.model_objects.specification.User;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class LoginService {
 
     private final SpotifyApiFactory spotifyApiFactory;
+    private final SpotifyUserService spotifyUserService;
 
     // TODO: 추후 삭제 - 스포티파이 인증 코드 테스트용 메서드
     public String getLoginURI() {
@@ -51,6 +53,13 @@ public class LoginService {
 
             String accessToken = credentials.getAccessToken();
             String refreshToken = credentials.getRefreshToken();
+
+            spotifyApi.setAccessToken(accessToken);
+            spotifyApi.setRefreshToken(refreshToken);
+
+            // TODO: 책임 분리 리팩토링 필요
+            User user = spotifyApi.getCurrentUsersProfile().build().execute();
+            spotifyUserService.insertOrUpdateSpotifyUser(user, accessToken, refreshToken);
 
             return new LoginResponseDto(accessToken, refreshToken);
 
