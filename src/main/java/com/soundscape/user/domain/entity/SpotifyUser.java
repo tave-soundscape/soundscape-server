@@ -3,6 +3,7 @@ package com.soundscape.user.domain.entity;
 import com.soundscape.common.jpa.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,11 +23,20 @@ public class SpotifyUser extends BaseTimeEntity {
     private String userName;
 
     @Column(name = "email")
-    private String emailId;
+    private String email;
 
     @Column(name = "access_token", columnDefinition = "TEXT")
     private String accessToken;
 
     @Column(name = "refresh_token", columnDefinition = "TEXT")
     private String refreshToken;
+
+    @Builder
+    public SpotifyUser(String spotifyId, String userName, String email, String accessToken, String refreshToken) {
+        this.spotifyId = spotifyId;
+        this.userName = userName;
+        this.email = email;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
 }
