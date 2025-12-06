@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class LoginController {
+public class LoginController implements LoginControllerDoc {
 
     private final LoginService loginService;
 
@@ -21,7 +21,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public CommonResponse getAccessToken(@RequestBody LoginRequestDto requestDto) {
+    public CommonResponse login(@RequestBody LoginRequestDto requestDto) {
         String userCode = requestDto.getCode();
         LoginResponseDto loginResponse = loginService.login(userCode);
         return CommonResponse.success(loginResponse);
