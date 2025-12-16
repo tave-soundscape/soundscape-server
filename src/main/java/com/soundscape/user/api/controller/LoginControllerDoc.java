@@ -1,7 +1,7 @@
-package com.soundscape.user.controller;
+package com.soundscape.user.api.controller;
 
 import com.soundscape.common.response.CommonResponse;
-import com.soundscape.user.domain.dto.LoginRequestDto;
+import com.soundscape.user.api.dto.LoginRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,8 +1,8 @@
-package com.soundscape.user.controller;
+package com.soundscape.user.api.controller;
 
 import com.soundscape.common.response.CommonResponse;
-import com.soundscape.user.domain.dto.LoginRequestDto;
-import com.soundscape.user.domain.dto.LoginResponseDto;
+import com.soundscape.user.api.dto.LoginRequestDto;
+import com.soundscape.user.api.dto.LoginResponseDto;
 import com.soundscape.user.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

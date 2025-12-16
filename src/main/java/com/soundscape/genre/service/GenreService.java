@@ -1,6 +1,6 @@
 package com.soundscape.genre.service;
 
-import com.soundscape.genre.domain.dto.GenreDto;
+import com.soundscape.genre.api.dto.GenreDto;
 import com.soundscape.genre.domain.entity.Genre;
 import com.soundscape.genre.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;

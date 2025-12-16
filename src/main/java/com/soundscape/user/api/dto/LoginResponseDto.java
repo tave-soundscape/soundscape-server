@@ -1,4 +1,4 @@
-package com.soundscape.user.domain.dto;
+package com.soundscape.user.api.dto;
 
 import lombok.Getter;
 

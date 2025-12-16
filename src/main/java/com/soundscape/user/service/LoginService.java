@@ -2,7 +2,7 @@ package com.soundscape.user.service;
 
 import com.soundscape.common.factory.SpotifyApiFactory;
 import com.soundscape.common.response.ErrorCode;
-import com.soundscape.user.domain.dto.LoginResponseDto;
+import com.soundscape.user.api.dto.LoginResponseDto;
 import com.soundscape.user.exception.SpotifyException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

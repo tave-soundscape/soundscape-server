@@ -1,4 +1,4 @@
-package com.soundscape.genre.domain.dto;
+package com.soundscape.genre.api.dto;
 
 import com.soundscape.genre.domain.entity.Genre;
 import lombok.Getter;

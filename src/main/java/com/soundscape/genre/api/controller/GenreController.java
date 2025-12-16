@@ -1,6 +1,6 @@
-package com.soundscape.genre.controller;
+package com.soundscape.genre.api.controller;
 
-import com.soundscape.genre.domain.dto.GenreDto;
+import com.soundscape.genre.api.dto.GenreDto;
 import com.soundscape.genre.service.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
