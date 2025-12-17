@@ -7,6 +7,7 @@ import lombok.*;
 
 @Entity
 @Getter
+@Table(name = "playlists")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Playlist extends BaseTimeEntity {
 
@@ -15,7 +16,7 @@ public class Playlist extends BaseTimeEntity {
 
     private String playlistName;
 
-    @Lob
+    @Column(length = 2048)
     private String playlistUrl;
 
     @Setter
@@ -24,8 +25,9 @@ public class Playlist extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public Playlist(String playlistName, String playlistUrl) {
+    public Playlist(String playlistName, String playlistUrl, User user) {
         this.playlistName = playlistName;
         this.playlistUrl = playlistUrl;
+        this.user = user;
     }
 }
