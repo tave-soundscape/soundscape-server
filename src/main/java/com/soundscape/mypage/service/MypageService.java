@@ -1,6 +1,7 @@
 package com.soundscape.mypage.service;
 
 import com.soundscape.mypage.api.dto.FavArtistsUpdateRequestDto;
+import com.soundscape.mypage.api.dto.FavGenresUpdateRequestDto;
 import com.soundscape.mypage.api.dto.NameUpdateRequestDto;
 import com.soundscape.user.domain.entity.User;
 import com.soundscape.user.repository.UserRepository;
@@ -38,5 +39,17 @@ public class MypageService {
         }
 
         user.updateFavArtists(request.getArtists());
+    }
+
+    @Transactional
+    public void updateFavGenres(Long userId, FavGenresUpdateRequestDto request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("user not found"));
+
+        if (request.getGenres() == null || request.getGenres().isEmpty()) {
+            throw new IllegalArgumentException("username is required");
+        }
+
+        user.updateFavGenres(request.getGenres());
     }
 }

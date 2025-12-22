@@ -2,6 +2,7 @@ package com.soundscape.mypage.api.controller;
 
 import com.soundscape.common.response.CommonResponse;
 import com.soundscape.mypage.api.dto.FavArtistsUpdateRequestDto;
+import com.soundscape.mypage.api.dto.FavGenresUpdateRequestDto;
 import com.soundscape.mypage.api.dto.NameUpdateRequestDto;
 import com.soundscape.mypage.service.MypageService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,13 @@ public class MypageController {
 
     @PatchMapping("/update/fav_artists")
     public CommonResponse updateFavArtists(@RequestParam Long userId, @RequestBody FavArtistsUpdateRequestDto dto) {
-        System.out.println(">>> updateFavArtists called");
         mypageService.updateFavArtists(userId, dto);
+        return CommonResponse.success("성공");
+    }
+
+    @PatchMapping("/update/fav_genres")
+    public CommonResponse updateFavGenres(@RequestParam Long userId, @RequestBody FavGenresUpdateRequestDto dto) {
+        mypageService.updateFavGenres(userId, dto);
         return CommonResponse.success("성공");
     }
 }
