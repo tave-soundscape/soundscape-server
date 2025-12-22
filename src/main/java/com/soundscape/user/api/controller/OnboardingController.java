@@ -7,12 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/onBoarding")
+@RequestMapping("/api/onboarding")
 @RequiredArgsConstructor
 public class OnboardingController {
     private final OnboardingService onboardingService;
 
-    @PostMapping("/onboarding")
+    @PostMapping
     public CommonResponse onboarding(@RequestParam Long userId,
                                            @RequestBody OnboardingRequestDto dto) {
         onboardingService.onboarding(userId, dto);
