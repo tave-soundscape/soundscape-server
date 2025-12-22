@@ -4,6 +4,7 @@ import com.soundscape.mypage.api.dto.FavArtistsUpdateRequestDto;
 import com.soundscape.mypage.api.dto.FavGenresUpdateRequestDto;
 import com.soundscape.mypage.api.dto.NameUpdateRequestDto;
 import com.soundscape.user.domain.entity.User;
+import com.soundscape.user.exception.UserNotFoundException;
 import com.soundscape.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +19,8 @@ public class MypageService {
     @Transactional
     public void updateName(Long userId, NameUpdateRequestDto request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found"));
+                .orElseThrow(UserNotFoundException::new);
 
-        // 프론트에서 자체적으로 null 값으로 입력되는 경우 입력 안된다고 막는지 확인이 필요합니다
-        // 만일 막는 경우 아래 코드 삭제 필요
         if (request.getUsername() == null || request.getUsername().isBlank()) {
             throw new IllegalArgumentException("username is required");
         }
@@ -32,7 +31,7 @@ public class MypageService {
     @Transactional
     public void updateFavArtists(Long userId, FavArtistsUpdateRequestDto request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         if (request.getArtists() == null || request.getArtists().isEmpty()) {
             throw new IllegalArgumentException("username is required");
@@ -44,7 +43,7 @@ public class MypageService {
     @Transactional
     public void updateFavGenres(Long userId, FavGenresUpdateRequestDto request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         if (request.getGenres() == null || request.getGenres().isEmpty()) {
             throw new IllegalArgumentException("username is required");
