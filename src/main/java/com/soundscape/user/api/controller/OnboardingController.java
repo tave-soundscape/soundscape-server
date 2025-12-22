@@ -16,7 +16,6 @@ public class OnboardingController {
     public CommonResponse onboarding(@RequestParam Long userId,
                                            @RequestBody OnboardingRequestDto dto) {
         onboardingService.onboarding(userId, dto);
-        // 여기도 어떤걸 리턴해야할지 모르겠어서 우선 이름 리턴했습니다
-        return CommonResponse.success(dto.getNickname());
+        return CommonResponse.success("온보딩 정보 입력 성공");
     }
 }

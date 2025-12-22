@@ -4,8 +4,7 @@ import com.soundscape.mypage.api.dto.FavArtistsUpdateRequestDto;
 import com.soundscape.mypage.api.dto.FavGenresUpdateRequestDto;
 import com.soundscape.mypage.api.dto.NameUpdateRequestDto;
 import com.soundscape.user.domain.entity.User;
-import com.soundscape.user.exception.UserNotFoundException;
-import com.soundscape.user.repository.UserRepository;
+import com.soundscape.user.service.UserReader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,12 +13,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MypageService {
 
-    private final UserRepository userRepository;
+    private final UserReader userReader;
 
     @Transactional
     public void updateName(Long userId, NameUpdateRequestDto request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+        User user = userReader.getUser(userId);
 
         if (request.getUsername() == null || request.getUsername().isBlank()) {
             throw new IllegalArgumentException("username is required");
@@ -30,8 +28,7 @@ public class MypageService {
 
     @Transactional
     public void updateFavArtists(Long userId, FavArtistsUpdateRequestDto request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+        User user = userReader.getUser(userId);
 
         if (request.getArtists() == null || request.getArtists().isEmpty()) {
             throw new IllegalArgumentException("username is required");
@@ -42,8 +39,7 @@ public class MypageService {
 
     @Transactional
     public void updateFavGenres(Long userId, FavGenresUpdateRequestDto request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+        User user = userReader.getUser(userId);
 
         if (request.getGenres() == null || request.getGenres().isEmpty()) {
             throw new IllegalArgumentException("username is required");
