@@ -20,14 +20,16 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_name")
     private String username;
 
     @Convert(converter = ListToStringConverter.class)
+    @Column(name = "fav_artists")
     private List<String> favArtists = new ArrayList<>();
 
     @Convert(converter = ListToStringConverter.class)
+    @Column(name = "fav_genres")
     private List<String> favGenres = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Playlist> playlists = new ArrayList<>();
@@ -46,4 +48,17 @@ public class User extends BaseTimeEntity {
             playlist.setUser(this);
         }
     }
+
+    public void updateUsername(String username) {
+        this.username = username;
+    }
+
+    public void updateFavArtists(List<String> favArtists) {
+        this.favArtists = favArtists;
+    }
+
+    public void updateFavGenres(List<String> favGenres) {
+        this.favGenres = favGenres;
+    }
+
 }
