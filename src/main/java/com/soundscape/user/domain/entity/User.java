@@ -20,10 +20,6 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "spotify_user_id")
-    private SpotifyUser spotifyUser;
-
     @Column(name = "user_name")
     private String username;
 

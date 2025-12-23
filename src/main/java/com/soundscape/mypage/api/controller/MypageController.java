@@ -15,19 +15,19 @@ public class MypageController {
 
     private final MypageService mypageService;
 
-    @PatchMapping("/update/name")
+    @PatchMapping("/name")
     public CommonResponse updateName(@RequestParam Long userId, @RequestBody NameUpdateRequestDto dto) {
         mypageService.updateName(userId, dto);
         return CommonResponse.success("성공");
     }
 
-    @PatchMapping("/update/fav_artists")
+    @PatchMapping("/fav_artists")
     public CommonResponse updateFavArtists(@RequestParam Long userId, @RequestBody FavArtistsUpdateRequestDto dto) {
         mypageService.updateFavArtists(userId, dto);
         return CommonResponse.success("성공");
     }
 
-    @PatchMapping("/update/fav_genres")
+    @PatchMapping("/fav_genres")
     public CommonResponse updateFavGenres(@RequestParam Long userId, @RequestBody FavGenresUpdateRequestDto dto) {
         mypageService.updateFavGenres(userId, dto);
         return CommonResponse.success("성공");
