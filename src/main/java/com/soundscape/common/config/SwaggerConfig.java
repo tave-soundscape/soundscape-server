@@ -17,8 +17,14 @@ import org.springframework.context.annotation.Configuration;
         },
         info = @Info(
                 title = "SoundScape API",
-                description = "SoundScape API<br/><br/>"
-                        + "<b>**프론트엔드 테스트 시 꼭 아래 Servers에서 배포 서버로 설정해주세요**.</b>",
+                description = "**SoundScape API**<br/><br/>"
+                        + "**프론트엔드 테스트 시 꼭 아래 Servers에서 배포 서버로 설정해주세요**."
+                        + "<br/><br/>"
+                        + "**인증 관련**<br/>"
+                        + " - 로그인을 제외한 모든 API는 JWT 토큰 인증이 필요합니다.<br/>"
+                        + " - 아래 Authorize 버튼을 누르고 임시 JWT 토큰을 입력해주세요.<br/><br/>"
+                        + "**임시 토큰**: <br/>"
+                        + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMjM0NSIsImlhdCI6MTc2Njg1NjA2OCwiZXhwIjoxNzY2ODU5NjY4fQ.yAqLJA-JxJ4fKtfNfXtIfDiWJCESDen-NIRwJigyhCgDO8GD6u2sSR6i0QxBmvDS.<br/>",
                 version = "v1"
         )
 )
