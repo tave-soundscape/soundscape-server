@@ -1,70 +1,69 @@
 package com.soundscape.user.service;
 
-import com.soundscape.common.factory.SpotifyApiFactory;
-import com.soundscape.common.response.ErrorCode;
+import com.soundscape.common.auth.jwt.JwtUtil;
 import com.soundscape.user.api.dto.LoginResponseDto;
-import com.soundscape.user.exception.SpotifyException;
+import com.soundscape.user.domain.entity.User;
+import com.soundscape.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
-import se.michaelthelin.spotify.model_objects.specification.User;
-import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
-import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClient;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
+//TODO RestClient 에러 핸들링 로직 추가 (우리 서비스 예외로 바꾸기)
 @Service
 @RequiredArgsConstructor
 public class LoginService {
 
-    private final SpotifyApiFactory spotifyApiFactory;
-    private final SpotifyUserService spotifyUserService;
+    private final RestClient restClient;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
-    // TODO: 추후 삭제 - 스포티파이 인증 코드 테스트용 메서드
-    public String getLoginURI() {
-        SpotifyApi spotifyApi = spotifyApiFactory.createSpotifyApi();
+    @Value("${kakao.client-id}") private String clientId;
+    @Value("${kakao.redirect-uri}") private String redirectUri;
+    @Value("${kakao.token-uri}") private String tokenUri;
+    @Value("${kakao.user-info-uri}") private String userInfoUri;
 
-        List<String> scopes = new ArrayList<>();
-        scopes.add("user-library-read");
-        scopes.add("user-top-read");
-        scopes.add("user-read-email");
-        scopes.add("user-top-read");
-        scopes.add("user-modify-playback-state");
-        scopes.add("user-read-playback-state");
-
-        AuthorizationCodeUriRequest authorizationCodeUriRequest = spotifyApi.authorizationCodeUri()
-                .scope(String.join(" ", scopes))
-                .show_dialog(true)
-                .build();
-
-        final URI uri = authorizationCodeUriRequest.execute();
-        return uri.toString();
+    // TODO 추후 삭제: 서버 테스트용 카카오 로그인 페이지 URL 생성
+    public String getLoginPage() {
+        return "https://kauth.kakao.com/oauth/authorize?client_id=" + clientId +
+                "&redirect_uri=" + redirectUri + "&response_type=code";
     }
 
-    public LoginResponseDto login(String userCode) {
-        SpotifyApi spotifyApi = spotifyApiFactory.createSpotifyApi();
-        AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(userCode).build();
+    public LoginResponseDto login(String code) {
+        String oid = getOauthId(code);
+        User user = userRepository.findByOid(oid)
+                .orElseGet(() -> {
+                    User newUser = new User(oid);
+                    return userRepository.save(newUser);
+                });
 
-        try {
-            AuthorizationCodeCredentials credentials = authorizationCodeRequest.execute();
+        String accessToken = jwtUtil.createToken(user.getId().toString());
+        return new LoginResponseDto(accessToken, null, user.isOnboarded());
+    }
 
-            String accessToken = credentials.getAccessToken();
-            String refreshToken = credentials.getRefreshToken();
+    private String getOauthId(String code) {
+        String accessToken = requestAccessToken(code);
+        Map<String, Object> kakaoUserInfo = restClient.get()
+                .uri(userInfoUri)
+                .header("Authorization",
+                        "Bearer " + accessToken).retrieve().body(Map.class
+                );
+        Map<String, Object> kakaoAccount = (Map<String, Object>) kakaoUserInfo.get("kakao_account");
+        String oid = kakaoUserInfo.get("id").toString();
+        return oid;
+    }
 
-            spotifyApi.setAccessToken(accessToken);
-            spotifyApi.setRefreshToken(refreshToken);
-
-            // TODO: 책임 분리 리팩토링 필요
-            User user = spotifyApi.getCurrentUsersProfile().build().execute();
-            spotifyUserService.insertOrUpdateSpotifyUser(user, accessToken, refreshToken);
-
-            return new LoginResponseDto(accessToken, refreshToken);
-
-        } catch (Exception e) {
-            throw new SpotifyException("Spotify 로그인 중 오류가 발생했습니다.", ErrorCode.SPOTIFY_API_ERROR);
-        }
+    private String requestAccessToken(String code) {
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "authorization_code");
+        body.add("client_id", clientId);
+        body.add("redirect_uri", redirectUri);
+        body.add("code", code);
+        Map<String, Object> response = restClient.post().uri(tokenUri).body(body).retrieve().body(Map.class);
+        return (String) response.get("access_token");
     }
 }
