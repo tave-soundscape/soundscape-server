@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
                         + " - 로그인을 제외한 모든 API는 JWT 토큰 인증이 필요합니다.<br/>"
                         + " - 아래 Authorize 버튼을 누르고 임시 JWT 토큰을 입력해주세요.<br/><br/>"
                         + "**임시 토큰**: <br/>"
-                        + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMjM0NSIsImlhdCI6MTc2Njg1NjU1OCwiZXhwIjoxNzY2ODYwMTU4fQ.zoBegRKWzNlNbmqcexxKRaoDrA1MmGhYUMxOWbJTFKljBK2IRdI2WEkB7MKPu_IE",
+                        + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzY2ODg3ODcyLCJleHAiOjE3OTg0MjM4NzJ9.SMEJfY6YTcfk3bYbnEoa3JHGlSj2Nm49BvZMWbCqoq-0kGN_5az_3GhuYOeP4-d6",
                 version = "v1"
         )
 )
