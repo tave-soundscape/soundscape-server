@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/genres")
 @RequiredArgsConstructor
-public class GenreController {
+public class GenreController implements GenreDoc {
     private final GenreService genreService;
 
     @GetMapping
