@@ -1,6 +1,6 @@
 package com.soundscape.common.auth.interceptor;
 
-import com.soundscape.common.auth.context.UserContext;
+import com.soundscape.common.auth.context.UserContextHolder;
 import com.soundscape.common.auth.jwt.JwtUtil;
 import com.soundscape.common.auth.exception.CustomJwtException;
 import com.soundscape.common.response.ErrorCode;
@@ -30,14 +30,14 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
         Jws<Claims> claims = jwtUtil.getClaims(token);
         String subject = claims.getPayload().getSubject();
 
-        UserContext.setUserContext(subject);
+        UserContextHolder.setUserContext(subject);
 
         return true;
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        UserContext.clear();
+        UserContextHolder.clear();
     }
 
     private String extractToken(HttpServletRequest request) {
