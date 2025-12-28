@@ -1,11 +1,11 @@
 package com.soundscape.common.auth.context;
 
-public class UserContext {
+public class UserContextHolder {
 
     private static final ThreadLocal<String> userContext = new ThreadLocal<>();
 
     public static void setUserContext(String userContext) {
-        UserContext.userContext.set(userContext);
+        UserContextHolder.userContext.set(userContext);
     }
 
     public static String getUserContext() {

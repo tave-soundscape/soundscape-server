@@ -1,5 +1,6 @@
 package com.soundscape.playlist.api.controller;
 
+import com.soundscape.common.auth.context.UserContextHolder;
 import com.soundscape.playlist.api.dto.PlaylistRequest;
 import com.soundscape.playlist.api.dto.PlaylistResponse;
 import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
@@ -16,7 +17,7 @@ public class PlayListController implements PlaylistControllerDoc {
 
     @PostMapping
     public PlaylistResponse generatePlaylist(@RequestBody PlaylistRequest request) {
-        Long userId = 1L; // TODO: 나중에 인증 기능 구현되면 수정하기, 현재는 1고정
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
         return playlistService.generatePlaylist(userId);
     }
 
@@ -25,7 +26,7 @@ public class PlayListController implements PlaylistControllerDoc {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ){
-        Long userId = 1L; // TODO: 나중에 인증 기능 구현되면 수정하기, 현재는 1고정
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
         return playlistService.getUserPlaylists(userId, page, size);
     }
 }
