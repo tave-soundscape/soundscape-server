@@ -20,6 +20,9 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 50)
+    private String oid; // kakao oauth 게정 id
+
     @Column(name = "user_name")
     private String username;
 
@@ -34,8 +37,11 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Playlist> playlists = new ArrayList<>();
 
-    public User(String username) {
-        this.username = username;
+    private boolean isOnboarded;
+
+    public User(String oid) {
+        this.oid = oid;
+        this.isOnboarded = false;
     }
 
     public void addFavArtist(String artist) {
