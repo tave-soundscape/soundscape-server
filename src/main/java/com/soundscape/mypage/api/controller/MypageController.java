@@ -1,5 +1,6 @@
 package com.soundscape.mypage.api.controller;
 
+import com.soundscape.common.auth.context.UserContextHolder;
 import com.soundscape.common.response.CommonResponse;
 import com.soundscape.mypage.api.dto.FavArtistsUpdateRequestDto;
 import com.soundscape.mypage.api.dto.FavGenresUpdateRequestDto;
@@ -16,19 +17,22 @@ public class MypageController {
     private final MypageService mypageService;
 
     @PatchMapping("/name")
-    public CommonResponse updateName(@RequestParam Long userId, @RequestBody NameUpdateRequestDto dto) {
+    public CommonResponse updateName(@RequestBody NameUpdateRequestDto dto) {
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
         mypageService.updateName(userId, dto);
         return CommonResponse.success("성공");
     }
 
     @PatchMapping("/fav_artists")
-    public CommonResponse updateFavArtists(@RequestParam Long userId, @RequestBody FavArtistsUpdateRequestDto dto) {
+    public CommonResponse updateFavArtists(@RequestBody FavArtistsUpdateRequestDto dto) {
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
         mypageService.updateFavArtists(userId, dto);
         return CommonResponse.success("성공");
     }
 
     @PatchMapping("/fav_genres")
-    public CommonResponse updateFavGenres(@RequestParam Long userId, @RequestBody FavGenresUpdateRequestDto dto) {
+    public CommonResponse updateFavGenres(@RequestBody FavGenresUpdateRequestDto dto) {
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
         mypageService.updateFavGenres(userId, dto);
         return CommonResponse.success("성공");
     }
