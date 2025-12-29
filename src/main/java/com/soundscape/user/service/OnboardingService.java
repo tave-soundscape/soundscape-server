@@ -19,5 +19,7 @@ public class OnboardingService {
         user.updateUsername(dto.getNickname());
         user.updateFavArtists(dto.getArtists());
         user.updateFavGenres(dto.getGenres());
+
+        user.markOnboarded();
     }
 }
