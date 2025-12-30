@@ -19,5 +19,7 @@ public interface PlaylistControllerDoc {
     CommonResponse savePlaylist(@PathVariable Long playlistId, @RequestBody PlaylistNameUpdateRequest newPlaylistName);
     @Operation(summary = "유저 플레이리스트 조회 API", description = "사용자 입력값을 바탕으로 스포티파이 플레이리스트를 생성합니다.")
     CommonResponse<SimplePlaylistsResponse> getUserPlaylists(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
+    @Operation(summary = "플레이리스트 상세 조회 API", description = "특정 플레이리스트의 상세 정보를 조회합니다.")
+    CommonResponse getPlaylistDetails(@PathVariable Long playlistId);
 }
 

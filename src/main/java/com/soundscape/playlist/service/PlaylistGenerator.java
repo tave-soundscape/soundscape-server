@@ -20,6 +20,7 @@ public class PlaylistGenerator {
         return PlaylistResponse.builder()
                 .playlistName("임시 플레이리스트")
                 .playlistUrl("https://open.spotify.com/playlist/3LgIAaE7ut3yL8s2v7JHNu?si=5f3e632c480e4a10")
+                .spotifyPlaylistId("3LgIAaE7ut3yL8s2v7JHNu")
                 .songs(createTempSongs())
                 .build();
     }
