@@ -10,6 +10,8 @@ import java.util.List;
 @Getter
 public class PlaylistResponse {
 
+    @Schema(description = "플레이리스트 ID (DB 식별값)", example = "1")
+    private final Long playlistId;
     @Schema(description = "플레이리스트 이름", example = "2025-12-16 17시 30분에 생성된 [사용자이름]의 플레이리스트")
     private final String playlistName;
     @Schema(description = "스포티파이 플레이리스트 URL", example = "https://open.spotify.com/playlist/3LgIAaE7ut3yL8s2v7JHNu?si=5f3e632c480e4a10")
@@ -18,7 +20,8 @@ public class PlaylistResponse {
     private final List<Song> songs;
 
     @Builder
-    public PlaylistResponse(String playlistName, String playlistUrl, List<Song> songs) {
+    public PlaylistResponse(Long playlistId, String playlistName, String playlistUrl, List<Song> songs) {
+        this.playlistId = playlistId;
         this.playlistName = playlistName;
         this.playlistUrl = playlistUrl;
         this.songs = songs;
