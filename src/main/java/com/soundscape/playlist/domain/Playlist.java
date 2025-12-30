@@ -16,6 +16,9 @@ public class Playlist extends BaseTimeEntity {
 
     private String playlistName;
 
+    @Column(name = "spotify_playlist_id")
+    private String spotifyPlaylistId;
+
     @Column(length = 2048)
     private String playlistUrl;
 
@@ -25,10 +28,10 @@ public class Playlist extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public Playlist(String playlistName, String playlistUrl) {
+    public Playlist(String playlistName, String playlistUrl, String spotifyPlaylistId) {
         this.playlistName = playlistName;
         this.playlistUrl = playlistUrl;
-        this.user = user;
+        this.spotifyPlaylistId = spotifyPlaylistId;
     }
 
     public void updatePlaylistName(String newPlaylistName) {
