@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class LoginRequestDto {
-    private final String code;
+    private final String kakaoAccessToken;
 
-    public LoginRequestDto(String code) {
-        this.code = code;
+    public LoginRequestDto(String kakaoAccessToken) {
+        this.kakaoAccessToken = kakaoAccessToken;
     }
 }

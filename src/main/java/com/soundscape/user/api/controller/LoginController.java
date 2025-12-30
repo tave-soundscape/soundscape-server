@@ -16,21 +16,21 @@ public class LoginController implements LoginControllerDoc {
 
     // TODO: 추후 삭제 - 카카오 로그인 테스트용 메서드
     @GetMapping
-    public String getAuthorizationCode() {
-        String authorizationUrl = loginService.getLoginPage();
-        return authorizationUrl;
+    public String getLoginPage() {
+        return loginService.getLoginPage();
     }
 
     // TODO: 추후 삭제 - 카카오 로그인 테스트용 메서드
     @GetMapping("/kakao/callback")
     public String kakaoCallback(@RequestParam String code) {
-        return "카카오에서 받은 인가 코드: " + code;
+        String kakaoAccessToken = loginService.requestAccessToken(code);
+        return "카카오엑세스 토큰: " + kakaoAccessToken;
     }
 
     @PostMapping("/login")
     public CommonResponse login(@RequestBody LoginRequestDto requestDto) {
-        String userCode = requestDto.getCode();
-        LoginResponseDto loginResponse = loginService.login(userCode);
+        String kakaoAccessToken = requestDto.getKakaoAccessToken();
+        LoginResponseDto loginResponse = loginService.login(kakaoAccessToken);
         return CommonResponse.success(loginResponse, "로그인에 성공했습니다.");
     }
 }

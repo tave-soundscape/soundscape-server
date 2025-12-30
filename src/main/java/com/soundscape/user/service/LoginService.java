@@ -33,8 +33,8 @@ public class LoginService {
                 "&redirect_uri=" + redirectUri + "&response_type=code";
     }
 
-    public LoginResponseDto login(String code) {
-        String oid = getOauthId(code);
+    public LoginResponseDto login(String kakaoAccessToken) {
+        String oid = getOauthId(kakaoAccessToken);
         User user = userRepository.findByOid(oid)
                 .orElseGet(() -> {
                     User newUser = new User(oid);
@@ -45,19 +45,20 @@ public class LoginService {
         return new LoginResponseDto(accessToken, null, user.isOnboarded());
     }
 
-    private String getOauthId(String code) {
-        String accessToken = requestAccessToken(code);
+    private String getOauthId(String kakaoAccessToken) {
         Map<String, Object> kakaoUserInfo = restClient.get()
                 .uri(userInfoUri)
                 .header("Authorization",
-                        "Bearer " + accessToken).retrieve().body(Map.class
+                        "Bearer " + kakaoAccessToken).retrieve().body(Map.class
                 );
         Map<String, Object> kakaoAccount = (Map<String, Object>) kakaoUserInfo.get("kakao_account");
         String oid = kakaoUserInfo.get("id").toString();
         return oid;
     }
 
-    private String requestAccessToken(String code) {
+    // deprecated
+    // TODO: 프론트에서 카카오 sdk 사용해서 추후 삭제
+    public String requestAccessToken(String code) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
