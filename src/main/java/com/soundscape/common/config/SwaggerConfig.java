@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         servers = {
                 @Server(url = "http://localhost:8080", description = "로컬 서버"),
-                @Server(url = "http://3.37.62.220:8080", description = "배포 서버")
+                @Server(url = "https://soundscape.higu.kr", description = "배포 서버")
         },
         info = @Info(
                 title = "SoundScape API",
