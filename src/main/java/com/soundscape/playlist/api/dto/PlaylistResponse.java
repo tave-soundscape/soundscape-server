@@ -14,15 +14,18 @@ public class PlaylistResponse {
     private final Long playlistId;
     @Schema(description = "플레이리스트 이름", example = "2025-12-16 17시 30분에 생성된 [사용자이름]의 플레이리스트")
     private final String playlistName;
+    @Schema(description = "스포티파이 플레이리스트 ID", example = "3LgIAaE7ut3yL8s2v7JHNu")
+    private final String spotifyPlaylistId;
     @Schema(description = "스포티파이 플레이리스트 URL", example = "https://open.spotify.com/playlist/3LgIAaE7ut3yL8s2v7JHNu?si=5f3e632c480e4a10")
     private final String playlistUrl;
     @Schema(description = "플레이리스트에 포함된 노래 목록")
     private final List<Song> songs;
 
     @Builder
-    public PlaylistResponse(Long playlistId, String playlistName, String playlistUrl, List<Song> songs) {
+    public PlaylistResponse(Long playlistId, String playlistName, String spotifyPlaylistId, String playlistUrl, List<Song> songs) {
         this.playlistId = playlistId;
         this.playlistName = playlistName;
+        this.spotifyPlaylistId = spotifyPlaylistId;
         this.playlistUrl = playlistUrl;
         this.songs = songs;
     }
