@@ -1,6 +1,7 @@
 package com.soundscape.playlist.api.controller;
 
 import com.soundscape.common.auth.context.UserContextHolder;
+import com.soundscape.common.response.CommonResponse;
 import com.soundscape.playlist.api.dto.PlaylistRequest;
 import com.soundscape.playlist.api.dto.PlaylistResponse;
 import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
@@ -16,17 +17,19 @@ public class PlayListController implements PlaylistControllerDoc {
     private final PlaylistService playlistService;
 
     @PostMapping
-    public PlaylistResponse generatePlaylist(@RequestBody PlaylistRequest request) {
+    public CommonResponse<PlaylistResponse> generatePlaylist(@RequestBody PlaylistRequest request) {
         Long userId = Long.valueOf(UserContextHolder.getUserContext());
-        return playlistService.generatePlaylist(userId);
+        PlaylistResponse result = playlistService.generatePlaylist(userId);
+        return CommonResponse.success(result);
     }
 
     @GetMapping
-    public SimplePlaylistsResponse getUserPlaylists(
+    public CommonResponse<SimplePlaylistsResponse> getUserPlaylists(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ){
         Long userId = Long.valueOf(UserContextHolder.getUserContext());
-        return playlistService.getUserPlaylists(userId, page, size);
+        SimplePlaylistsResponse result = playlistService.getUserPlaylists(userId, page, size);
+        return CommonResponse.success(result);
     }
 }

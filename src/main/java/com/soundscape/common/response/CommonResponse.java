@@ -27,7 +27,7 @@ public class CommonResponse<T> {
     }
 
     public static <T> CommonResponse<T> success(T data) {
-        return success(data, null);
+        return success(data, "success");
     }
 
     public static CommonResponse fail(String message, String errorCode) {
