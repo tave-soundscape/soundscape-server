@@ -25,9 +25,13 @@ public class Playlist extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public Playlist(String playlistName, String playlistUrl, User user) {
+    public Playlist(String playlistName, String playlistUrl) {
         this.playlistName = playlistName;
         this.playlistUrl = playlistUrl;
         this.user = user;
+    }
+
+    public void updatePlaylistName(String newPlaylistName) {
+        this.playlistName = newPlaylistName;
     }
 }
