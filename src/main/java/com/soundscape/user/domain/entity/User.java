@@ -37,6 +37,7 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Playlist> playlists = new ArrayList<>();
 
+    @Column(name = "is_onboarded", nullable = false)
     private boolean isOnboarded;
 
     public User(String oid) {
@@ -67,4 +68,7 @@ public class User extends BaseTimeEntity {
         this.favGenres = favGenres;
     }
 
+    public void markOnboarded() {
+        this.isOnboarded = true;
+    }
 }
