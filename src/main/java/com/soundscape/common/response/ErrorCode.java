@@ -21,7 +21,10 @@ public enum ErrorCode {
     JWT_NOT_FOUND("헤더에 인증 토큰이 존재하지 않습니다."),
     JWT_INVALID_TOKEN("유효하지 않은 토큰입니다."),
     JWT_EXPIRED_TOKEN("만료된 토큰입니다."),
-    JWT_ERROR("토큰 처리 중 오류가 발생했습니다.");
+    JWT_ERROR("토큰 처리 중 오류가 발생했습니다."),
+
+    // Playlist
+    PLAYLIST_NOT_FOUND("존재하지 않는 플레이리스트입니다");
 
     private final String errorMsg;
 
