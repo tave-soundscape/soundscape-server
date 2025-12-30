@@ -7,6 +7,7 @@ import com.soundscape.reviews.service.ReviewCommand;
 import com.soundscape.reviews.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,7 @@ public class ReviewController implements ReviewDoc {
     private final ReviewService reviewService;
 
     @PostMapping
-    public CommonResponse createReview(ReviewRequest request) {
+    public CommonResponse createReview(@RequestBody ReviewRequest request) {
         Long userId = Long.valueOf(UserContextHolder.getUserContext());
         ReviewCommand command = request.toCommand(userId);
         reviewService.createReview(command);
