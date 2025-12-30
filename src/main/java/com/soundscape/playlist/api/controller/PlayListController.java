@@ -2,6 +2,7 @@ package com.soundscape.playlist.api.controller;
 
 import com.soundscape.common.auth.context.UserContextHolder;
 import com.soundscape.common.response.CommonResponse;
+import com.soundscape.playlist.api.dto.PlaylistNameUpdateRequest;
 import com.soundscape.playlist.api.dto.PlaylistRequest;
 import com.soundscape.playlist.api.dto.PlaylistResponse;
 import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
@@ -21,6 +22,13 @@ public class PlayListController implements PlaylistControllerDoc {
         Long userId = Long.valueOf(UserContextHolder.getUserContext());
         PlaylistResponse result = playlistService.generatePlaylist(userId);
         return CommonResponse.success(result);
+    }
+
+    @PatchMapping("/{playlistId}")
+    public CommonResponse savePlaylist(@PathVariable Long playlistId, @RequestBody PlaylistNameUpdateRequest newPlaylistName) {
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
+        playlistService.savePlaylist(playlistId, userId, newPlaylistName.getNewPlaylistName());
+        return CommonResponse.success("playlist ID: " + playlistId, "플레이리스트가 저장되었습니다.");
     }
 
     @GetMapping
