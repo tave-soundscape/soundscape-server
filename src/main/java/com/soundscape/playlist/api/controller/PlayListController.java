@@ -40,4 +40,10 @@ public class PlayListController implements PlaylistControllerDoc {
         SimplePlaylistsResponse result = playlistService.getUserPlaylists(userId, page, size);
         return CommonResponse.success(result);
     }
+
+    @GetMapping("/{playlistId}")
+    public CommonResponse getPlaylistDetails(@PathVariable Long playlistId) {
+        PlaylistResponse result = playlistService.getPlaylistDetails(playlistId);
+        return CommonResponse.success(result);
+    }
 }
