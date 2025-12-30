@@ -1,5 +1,6 @@
 package com.soundscape.playlist.service;
 
+import com.soundscape.common.exception.EntityNotFoundException;
 import com.soundscape.playlist.api.dto.PlaylistResponse;
 import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
 import com.soundscape.playlist.domain.Playlist;
@@ -26,12 +27,25 @@ public class PlaylistService {
     @Transactional
     public PlaylistResponse generatePlaylist(Long userId) {
         PlaylistResponse result = playlistGenerator.createSpotifyPlaylist();
-        User user = userReader.getUser(userId);
-        Playlist playlist = new Playlist(result.getPlaylistName(), result.getPlaylistUrl(), user);
-        playlistRepository.save(playlist);
-        user.addPlayList(playlist);
+        Playlist initPlaylist = new Playlist(result.getPlaylistName(), result.getPlaylistUrl());
+        Playlist playlist = playlistRepository.save(initPlaylist);
 
-        return result;
+        return PlaylistResponse.builder()
+                .playlistId(playlist.getId())
+                .playlistName(result.getPlaylistName())
+                .playlistUrl(result.getPlaylistUrl())
+                .songs(result.getSongs())
+                .build();
+    }
+
+    @Transactional
+    public void savePlaylist(Long playlistId, Long userId, String newPlaylistName) {
+        User user = userReader.getUser(userId);
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new EntityNotFoundException("Playlist not found with id: " + playlistId));
+        playlist.updatePlaylistName(newPlaylistName);
+        user.addPlayList(playlist);
+        playlistRepository.save(playlist);
     }
 
     @Transactional(readOnly = true)
