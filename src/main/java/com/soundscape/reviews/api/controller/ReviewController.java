@@ -1,4 +1,4 @@
-package com.soundscape.reviews.api;
+package com.soundscape.reviews.api.controller;
 
 import com.soundscape.common.auth.context.UserContextHolder;
 import com.soundscape.common.response.CommonResponse;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/review")
 @RequiredArgsConstructor
-public class ReviewController {
+public class ReviewController implements ReviewDoc {
 
     private final ReviewService reviewService;
 
