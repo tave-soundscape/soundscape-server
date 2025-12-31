@@ -3,7 +3,6 @@ package com.soundscape.playlist.service;
 import com.soundscape.common.exception.BaseException;
 import com.soundscape.common.factory.SpotifyApiFactory;
 import com.soundscape.common.response.ErrorCode;
-import com.soundscape.playlist.api.dto.PlaylistRequest;
 import com.soundscape.playlist.api.dto.PlaylistResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +29,9 @@ public class PlaylistGenerator {
     private final RestClient restClient;
     private final SpotifyApiFactory spotifyApiFactory;
 
-    public PlaylistResponse createSpotifyPlaylist(PlaylistRequest request) {
+    public PlaylistResponse createSpotifyPlaylist(PlaylistCommand command) {
         // 추천 엔진 호출
-        EngineResponse engineResponse = callEngine(request);
+        EngineResponse engineResponse = callEngine(command);
         List<EngineResponse.TrackDto> engineTracks = engineResponse.getOutput().getFinal_tracks();
 
         SpotifyApi spotifyApi = spotifyApiFactory.getSpotifyApi();
@@ -64,6 +63,7 @@ public class PlaylistGenerator {
                             .artistName(t.getAt().isEmpty() ? "Unknown" : t.getAt().get(0).getAtn())
                             .albumName(t.getAn())
                             .uri(t.getTu())
+                            .spotifyUrl(t.getTurl())
                             .imageUrl(t.getImg())
                             .duration(formatDuration(t.getMs()))
                             .build())
@@ -82,13 +82,13 @@ public class PlaylistGenerator {
         }
     }
 
-    private EngineResponse callEngine(PlaylistRequest request) {
+    private EngineResponse callEngine(PlaylistCommand command) {
         EngineRequest engineRequest = new EngineRequest(
                 new EngineRequest.Input(
                         new EngineRequest.UserContext(
-                                request.getLocation().toLowerCase(),
-                                request.getGoal().toLowerCase(),
-                                request.getDecibel().toLowerCase()
+                                command.getLocation().toLowerCase(),
+                                command.getGoal().toLowerCase(),
+                                command.getDecibel().toLowerCase()
                         ),
                         List.of()
                 )

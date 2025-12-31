@@ -29,6 +29,7 @@ public class EngineResponse {
         private String tid;       // Track ID
         private String tn;        // Track Name
         private String tu;        // Track URI
+        private String turl;
         private int ms;           // Duration in ms
         private String img;       // Album Image URL
         private List<ArtistDto> at;
