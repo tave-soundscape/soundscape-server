@@ -3,7 +3,6 @@ package com.soundscape.playlist.service;
 import com.soundscape.common.exception.BaseException;
 import com.soundscape.common.factory.SpotifyApiFactory;
 import com.soundscape.common.response.ErrorCode;
-import com.soundscape.playlist.api.dto.PlaylistRequest;
 import com.soundscape.playlist.api.dto.PlaylistResponse;
 import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
 import com.soundscape.playlist.domain.Playlist;
@@ -36,8 +35,9 @@ public class PlaylistService {
     private final PlaylistRepository playlistRepository;
 
     @Transactional
-    public PlaylistResponse generatePlaylist(Long userId, PlaylistRequest request) {
-        PlaylistResponse result = playlistGenerator.createSpotifyPlaylist(request);
+    public PlaylistResponse generatePlaylist(PlaylistCommand command) {
+
+        PlaylistResponse result = playlistGenerator.createSpotifyPlaylist(command);
         Playlist initPlaylist = new Playlist(result.getPlaylistName(), result.getPlaylistUrl(), result.getSpotifyPlaylistId());
         Playlist playlist = playlistRepository.save(initPlaylist);
 
