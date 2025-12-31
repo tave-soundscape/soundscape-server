@@ -35,18 +35,18 @@ public class PlaylistResponse {
     @Builder
     public static class Song {
         @Schema(description = "노래 제목", example = "Supersonic")
-        private final String title;
+        private final String title; // 엔진의 tn
         @Schema(description = "아티스트 이름", example = "fromis_9")
-        private final String artistName;
+        private final String artistName; //엔진의 atn
         @Schema(description = "앨범 이름", example = "Supersonic")
-        private final String albumName;
+        private final String albumName; // 엔진의 an
         @Schema(description = "스포티파이 URI, 딥링크 연결용", example = "spotify:track:6oNLSQX8bcAdbCElZYju3v")
-        private final String uri;
+        private final String uri; //엔진의 tu
         @Schema(description = "스포티파이 노래 URL", example = "https://open.spotify.com/track/6oNLSQX8bcAdbCElZYju3v")
         private final String spotifyUrl;
         @Schema(description = "앨범 이미지 URL", example = "https://i.scdn.co/image/ab67616d0000b2730490e8ab48790ca6e5add267")
-        private final String imageUrl;
+        private final String imageUrl; //엔진의 img
         @Schema(description = "노래 재생 시간", example = "2:54")
-        private final String duration;
+        private final String duration; //엔진의 ms를 포맷팅
     }
 }

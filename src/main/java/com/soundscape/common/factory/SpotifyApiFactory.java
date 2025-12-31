@@ -16,6 +16,8 @@ public class SpotifyApiFactory {
     private String clientSecret;
     @Value("${spotify.redirect-uri}")
     private String redirectUri;
+    @Value("${spotify.refresh-token}")
+    private String refreshToken;
 
     private SpotifyApi spotifyApi;
     private long expiresAt; // 토큰 만료 시간 기록 (Unix Timestamp)
@@ -25,6 +27,7 @@ public class SpotifyApiFactory {
         this.spotifyApi = new SpotifyApi.Builder()
                 .setClientId(clientId)
                 .setClientSecret(clientSecret)
+                .setRefreshToken(refreshToken)
                 .build();
         refreshAccessToken();
     }
@@ -40,8 +43,8 @@ public class SpotifyApiFactory {
     // TODO: 스케줄링 도입 고려
     private void refreshAccessToken() {
         try {
-            var clientCredentialsRequest = spotifyApi.clientCredentials().build();
-            var credentials = clientCredentialsRequest.execute();
+            var refreshRequest = spotifyApi.authorizationCodeRefresh().build();
+            var credentials = refreshRequest.execute();
 
             spotifyApi.setAccessToken(credentials.getAccessToken());
             // 현재 시간 + (유효기간 * 1000ms)로 만료 시점 계산

@@ -3,6 +3,7 @@ package com.soundscape.playlist.service;
 import com.soundscape.common.exception.BaseException;
 import com.soundscape.common.factory.SpotifyApiFactory;
 import com.soundscape.common.response.ErrorCode;
+import com.soundscape.playlist.api.dto.PlaylistRequest;
 import com.soundscape.playlist.api.dto.PlaylistResponse;
 import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
 import com.soundscape.playlist.domain.Playlist;
@@ -10,13 +11,17 @@ import com.soundscape.playlist.repository.PlaylistRepository;
 import com.soundscape.user.domain.entity.User;
 import com.soundscape.user.service.UserReader;
 import lombok.RequiredArgsConstructor;
+import org.apache.hc.core5.http.ParseException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,8 +36,8 @@ public class PlaylistService {
     private final PlaylistRepository playlistRepository;
 
     @Transactional
-    public PlaylistResponse generatePlaylist(Long userId) {
-        PlaylistResponse result = playlistGenerator.createSpotifyPlaylist();
+    public PlaylistResponse generatePlaylist(Long userId, PlaylistRequest request) {
+        PlaylistResponse result = playlistGenerator.createSpotifyPlaylist(request);
         Playlist initPlaylist = new Playlist(result.getPlaylistName(), result.getPlaylistUrl(), result.getSpotifyPlaylistId());
         Playlist playlist = playlistRepository.save(initPlaylist);
 
@@ -49,8 +54,19 @@ public class PlaylistService {
     public void savePlaylist(Long playlistId, Long userId, String newPlaylistName) {
         User user = userReader.getUser(userId);
         Playlist playlist = playlistReader.getPlaylist(playlistId);
+        String spotifyPlaylistId = playlist.getSpotifyPlaylistId();
         playlist.updatePlaylistName(newPlaylistName);
         user.addPlayList(playlist);
+
+        try {
+            spotifyApiFactory.getSpotifyApi().changePlaylistsDetails(spotifyPlaylistId)
+                    .name(newPlaylistName)
+                    .build()
+                    .execute();
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            throw new BaseException("스포티파이 플레이리스트 이름 변경 중 오류 발생", ErrorCode.SPOTIFY_API_ERROR);
+        }
+
         playlistRepository.save(playlist);
     }
 
@@ -58,13 +74,13 @@ public class PlaylistService {
     public PlaylistResponse getPlaylistDetails(Long playlistId) {
         Playlist playlist = playlistReader.getPlaylist(playlistId);
         String spotifyPlaylistId = playlist.getSpotifyPlaylistId();
-        var spotifyPlaylistDetails = fetchSpotifyPlaylistDetails(spotifyPlaylistId);
+        var spotifyPlaylistDetails = fetchSpotifyPlaylist(spotifyPlaylistId);
 
         List<PlaylistResponse.Song> songs = Arrays.stream(spotifyPlaylistDetails.getTracks().getItems())
                 .map(item -> {
                     var itemElement = item.getTrack();
 
-                    if (itemElement instanceof se.michaelthelin.spotify.model_objects.specification.Track track) {
+                    if (itemElement instanceof Track track) {
                         return PlaylistResponse.Song.builder()
                                 .title(track.getName())
                                 .artistName(track.getArtists().length > 0 ? track.getArtists()[0].getName() : "Unknown")
@@ -102,7 +118,7 @@ public class PlaylistService {
         return new SimplePlaylistsResponse(simpleList, userPlaylists.hasNext());
     }
 
-    private se.michaelthelin.spotify.model_objects.specification.Playlist fetchSpotifyPlaylistDetails(String spotifyPlaylistId) {
+    private se.michaelthelin.spotify.model_objects.specification.Playlist fetchSpotifyPlaylist(String spotifyPlaylistId) {
         SpotifyApi api = spotifyApiFactory.getSpotifyApi();
         try {
             return api.getPlaylist(spotifyPlaylistId).build().execute();
