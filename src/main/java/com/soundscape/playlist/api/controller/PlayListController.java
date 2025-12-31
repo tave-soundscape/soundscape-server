@@ -6,6 +6,7 @@ import com.soundscape.playlist.api.dto.PlaylistNameUpdateRequest;
 import com.soundscape.playlist.api.dto.PlaylistRequest;
 import com.soundscape.playlist.api.dto.PlaylistResponse;
 import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
+import com.soundscape.playlist.service.PlaylistCommand;
 import com.soundscape.playlist.service.PlaylistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,8 @@ public class PlayListController implements PlaylistControllerDoc {
     @PostMapping
     public CommonResponse<PlaylistResponse> generatePlaylist(@RequestBody PlaylistRequest request) {
         Long userId = Long.valueOf(UserContextHolder.getUserContext());
-        PlaylistResponse result = playlistService.generatePlaylist(userId, request);
+        PlaylistCommand command = request.toCommand();
+        PlaylistResponse result = playlistService.generatePlaylist(command);
         return CommonResponse.success(result);
     }
 
