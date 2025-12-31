@@ -20,7 +20,7 @@ public class PlayListController implements PlaylistControllerDoc {
     @PostMapping
     public CommonResponse<PlaylistResponse> generatePlaylist(@RequestBody PlaylistRequest request) {
         Long userId = Long.valueOf(UserContextHolder.getUserContext());
-        PlaylistResponse result = playlistService.generatePlaylist(userId);
+        PlaylistResponse result = playlistService.generatePlaylist(userId, request);
         return CommonResponse.success(result);
     }
 
