@@ -17,7 +17,7 @@ public class PlaylistRequest {
     public PlaylistCommand toCommand() {
         String decibelCategory;
         if (decibel <= 50) decibelCategory = "quiet";
-        else if (decibel <= 65) decibelCategory = "moderate";
+        else if (decibel <= 70) decibelCategory = "moderate";
         else decibelCategory = "loud";
 
         return new PlaylistCommand(location, decibelCategory, goal);
