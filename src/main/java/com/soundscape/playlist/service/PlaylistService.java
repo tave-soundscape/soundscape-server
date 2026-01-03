@@ -6,6 +6,7 @@ import com.soundscape.common.response.ErrorCode;
 import com.soundscape.playlist.api.dto.PlaylistResponse;
 import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
 import com.soundscape.playlist.domain.Playlist;
+import com.soundscape.playlist.domain.PlaylistCondition;
 import com.soundscape.playlist.repository.PlaylistRepository;
 import com.soundscape.user.domain.entity.User;
 import com.soundscape.user.service.UserReader;
@@ -38,7 +39,8 @@ public class PlaylistService {
     public PlaylistResponse generatePlaylist(PlaylistCommand command) {
 
         PlaylistResponse result = playlistGenerator.createSpotifyPlaylist(command);
-        Playlist initPlaylist = new Playlist(result.getPlaylistName(), result.getPlaylistUrl(), result.getSpotifyPlaylistId());
+        PlaylistCondition playlistCondition = new PlaylistCondition(command.getLocation(), command.getDecibel(), command.getGoal());
+        Playlist initPlaylist = new Playlist(result.getPlaylistName(), result.getPlaylistUrl(), result.getSpotifyPlaylistId(), playlistCondition);
         Playlist playlist = playlistRepository.save(initPlaylist);
 
         return PlaylistResponse.builder()

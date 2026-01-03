@@ -22,16 +22,20 @@ public class Playlist extends BaseTimeEntity {
     @Column(length = 2048)
     private String playlistUrl;
 
+    @Embedded
+    private PlaylistCondition playlistCondition;
+
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public Playlist(String playlistName, String playlistUrl, String spotifyPlaylistId) {
+    public Playlist(String playlistName, String playlistUrl, String spotifyPlaylistId, PlaylistCondition playlistCondition) {
         this.playlistName = playlistName;
         this.playlistUrl = playlistUrl;
         this.spotifyPlaylistId = spotifyPlaylistId;
+        this.playlistCondition = playlistCondition;
     }
 
     public void updatePlaylistName(String newPlaylistName) {
