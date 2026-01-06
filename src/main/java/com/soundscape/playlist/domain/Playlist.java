@@ -1,9 +1,14 @@
 package com.soundscape.playlist.domain;
 
 import com.soundscape.common.jpa.BaseTimeEntity;
-import com.soundscape.user.domain.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,10 +30,8 @@ public class Playlist extends BaseTimeEntity {
     @Embedded
     private PlaylistCondition playlistCondition;
 
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToMany(mappedBy = "playlist", fetch = FetchType.LAZY)
+    private List<UserPlaylist> userPlaylists = new ArrayList<>();
 
     @Builder
     public Playlist(String playlistName, String playlistUrl, String spotifyPlaylistId, PlaylistCondition playlistCondition) {

@@ -1,27 +1,25 @@
 package com.soundscape.playlist.service;
 
-import com.soundscape.common.exception.BaseException;
-import com.soundscape.common.factory.SpotifyApiFactory;
-import com.soundscape.common.response.ErrorCode;
-import com.soundscape.playlist.api.dto.PlaylistResponse;
-import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
+import com.soundscape.playlist.api.dto.response.PlaylistResponse;
+import com.soundscape.playlist.api.dto.response.SimplePlaylistsResponse;
 import com.soundscape.playlist.domain.Playlist;
 import com.soundscape.playlist.domain.PlaylistCondition;
+import com.soundscape.playlist.domain.UserPlaylist;
+import com.soundscape.playlist.infra.spotify.SpotifyPlaylistClient;
 import com.soundscape.playlist.repository.PlaylistRepository;
+import com.soundscape.playlist.repository.UserPlaylistRepository;
+import com.soundscape.playlist.service.command.PlaylistCommand;
+import com.soundscape.playlist.service.mapper.PlaylistMapper;
 import com.soundscape.user.domain.entity.User;
 import com.soundscape.user.service.UserReader;
 import lombok.RequiredArgsConstructor;
-import org.apache.hc.core5.http.ParseException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,19 +27,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlaylistService {
 
-    private final SpotifyApiFactory spotifyApiFactory;
     private final PlaylistGenerator playlistGenerator;
     private final UserReader userReader;
     private final PlaylistReader playlistReader;
+    private final UserPlaylistReader userPlaylistReader;
     private final PlaylistRepository playlistRepository;
+    private final UserPlaylistRepository userPlaylistRepository;
+    private final SpotifyPlaylistClient spotifyPlaylistClient;
 
     @Transactional
     public PlaylistResponse generatePlaylist(PlaylistCommand command) {
 
-        PlaylistResponse result = playlistGenerator.createSpotifyPlaylist(command);
+        PlaylistResponse result = playlistGenerator.generate(command);
         PlaylistCondition playlistCondition = new PlaylistCondition(command.getLocation(), command.getDecibel(), command.getGoal());
-        Playlist initPlaylist = new Playlist(result.getPlaylistName(), result.getPlaylistUrl(), result.getSpotifyPlaylistId(), playlistCondition);
-        Playlist playlist = playlistRepository.save(initPlaylist);
+        Playlist playlist = new Playlist(
+                result.getPlaylistName(),
+                result.getPlaylistUrl(),
+                result.getSpotifyPlaylistId(),
+                playlistCondition
+        );
+        playlistRepository.save(playlist);
 
         return PlaylistResponse.builder()
                 .playlistId(playlist.getId())
@@ -56,42 +61,37 @@ public class PlaylistService {
     public void savePlaylist(Long playlistId, Long userId, String newPlaylistName) {
         User user = userReader.getUser(userId);
         Playlist playlist = playlistReader.getPlaylist(playlistId);
-        String spotifyPlaylistId = playlist.getSpotifyPlaylistId();
-        playlist.updatePlaylistName(newPlaylistName);
-        user.addPlayList(playlist);
-
-        try {
-            spotifyApiFactory.getSpotifyApi().changePlaylistsDetails(spotifyPlaylistId)
-                    .name(newPlaylistName)
-                    .build()
-                    .execute();
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            throw new BaseException("스포티파이 플레이리스트 이름 변경 중 오류 발생", ErrorCode.SPOTIFY_API_ERROR);
+        boolean existence = userPlaylistReader.checkExistence(user, playlist);
+        if (existence) {
+            UserPlaylist userPlaylist = userPlaylistReader.getUserPlaylist(user, playlist);
+            userPlaylist.updateCustomPlaylistName(newPlaylistName);
+        } else {
+            UserPlaylist userPlaylist = new UserPlaylist(user, playlist, newPlaylistName);
+            userPlaylistRepository.save(userPlaylist);
         }
-
-        playlistRepository.save(playlist);
     }
 
     @Transactional(readOnly = true)
-    public PlaylistResponse getPlaylistDetails(Long playlistId) {
+    public PlaylistResponse getPlaylistDetails(Long playlistId, Long userId) {
         Playlist playlist = playlistReader.getPlaylist(playlistId);
         String spotifyPlaylistId = playlist.getSpotifyPlaylistId();
         var spotifyPlaylistDetails = fetchSpotifyPlaylist(spotifyPlaylistId);
 
+        String playlistName = playlist.getPlaylistName();
+        if (userId != null) {
+            User user = userReader.getUser(userId);
+            boolean isSaved = userPlaylistReader.checkExistence(user, playlist);
+            if (isSaved) {
+                UserPlaylist userPlaylist = userPlaylistReader.getUserPlaylist(user, playlist);
+                playlistName = userPlaylist.getCustomPlaylistName();
+            }
+        }
+
         List<PlaylistResponse.Song> songs = Arrays.stream(spotifyPlaylistDetails.getTracks().getItems())
                 .map(item -> {
                     var itemElement = item.getTrack();
-
                     if (itemElement instanceof Track track) {
-                        return PlaylistResponse.Song.builder()
-                                .title(track.getName())
-                                .artistName(track.getArtists().length > 0 ? track.getArtists()[0].getName() : "Unknown")
-                                .albumName(track.getAlbum().getName())
-                                .uri(track.getUri())
-                                .spotifyUrl(track.getExternalUrls().get("spotify"))
-                                .imageUrl(track.getAlbum().getImages().length > 0 ? track.getAlbum().getImages()[0].getUrl() : null)
-                                .duration(formatDuration(track.getDurationMs()))
-                                .build();
+                        return PlaylistMapper.toSongFromSpotifyTrack(track);
                     }
 
                     return null;
@@ -101,7 +101,7 @@ public class PlaylistService {
 
         return PlaylistResponse.builder()
                 .playlistId(playlist.getId())
-                .playlistName(playlist.getPlaylistName())
+                .playlistName(playlistName)
                 .spotifyPlaylistId(spotifyPlaylistId)
                 .playlistUrl(playlist.getPlaylistUrl())
                 .songs(songs)
@@ -112,7 +112,7 @@ public class PlaylistService {
     public SimplePlaylistsResponse getUserPlaylists(Long userId, int page, int size) {
         PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         User user = userReader.getUser(userId);
-        Slice<Playlist> userPlaylists = playlistRepository.findAllByUser(user, pageable);
+        Slice<UserPlaylist> userPlaylists = userPlaylistRepository.findAllByUser(user, pageable);
         List<SimplePlaylistsResponse.SimpleInfo> simpleList = userPlaylists.getContent().stream()
                 .map(SimplePlaylistsResponse.SimpleInfo::new)
                 .toList();
@@ -121,17 +121,6 @@ public class PlaylistService {
     }
 
     private se.michaelthelin.spotify.model_objects.specification.Playlist fetchSpotifyPlaylist(String spotifyPlaylistId) {
-        SpotifyApi api = spotifyApiFactory.getSpotifyApi();
-        try {
-            return api.getPlaylist(spotifyPlaylistId).build().execute();
-        } catch (Exception e) {
-            throw new BaseException("플레이리스트 조회 중 오류 발생", ErrorCode.SPOTIFY_API_ERROR);
-        }
-    }
-
-    private String formatDuration(int durationMs) {
-        int minutes = (durationMs / 1000) / 60;
-        int seconds = (durationMs / 1000) % 60;
-        return String.format("%d:%02d", minutes, seconds);
+        return spotifyPlaylistClient.getPlaylistDetails(spotifyPlaylistId);
     }
 }

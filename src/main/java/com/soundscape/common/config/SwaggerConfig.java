@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
                         + " - 아래 Authorize 버튼을 누르고 임시 JWT 토큰을 입력해주세요.<br/><br/>"
                         + "**임시 토큰**(유저 id 1인 테스트 유저의 계정으로 로그인 하는 것과 동일): <br/>"
                         + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzY2ODg3ODcyLCJleHAiOjE3OTg0MjM4NzJ9.SMEJfY6YTcfk3bYbnEoa3JHGlSj2Nm49BvZMWbCqoq-0kGN_5az_3GhuYOeP4-d6"
+                        + "<br/>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzY3Njg5OTI2LCJleHAiOjE3OTkyMjU5MjZ9.Il779gX-sxdSqyHqDFz9JDr5rBwTat_zq_YS68GRyvS9gW2Xia-bO9DKpBArp3OD"
                         + "<br/><br/>**임시 토큰을 사용하지 않고, 로그인 테스트 방법**<br/>"
                         + "1. api/v1/auth 경로로 GET 요청을 보내 카카오 로그인 URL을 받습니다.<br/>"
                         + "2. 받은 URL로 접속하여 카카오 로그인 후, 리다이렉트된 주소에서 code 파라미터 값을 복사합니다.<br/>"

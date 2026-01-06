@@ -1,7 +1,7 @@
 package com.soundscape.user.domain.entity;
 
 import com.soundscape.common.jpa.BaseTimeEntity;
-import com.soundscape.playlist.domain.Playlist;
+import com.soundscape.playlist.domain.UserPlaylist;
 import com.soundscape.user.domain.converter.ListToStringConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,8 +35,8 @@ public class User extends BaseTimeEntity {
     @Column(name = "fav_genres")
     private List<String> favGenres = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Playlist> playlists = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserPlaylist> userPlaylists = new ArrayList<>();
 
     @Column(name = "is_onboarded", nullable = false)
     private boolean isOnboarded;
@@ -44,17 +44,6 @@ public class User extends BaseTimeEntity {
     public User(String oid) {
         this.oid = oid;
         this.isOnboarded = false;
-    }
-
-    public void addFavArtist(String artist) {
-        this.favArtists.add(artist);
-    }
-
-    public void addPlayList(Playlist playlist) {
-        playlists.add(playlist);
-        if (playlist.getUser() != this) {
-            playlist.setUser(this);
-        }
     }
 
     public void updateUsername(String username) {

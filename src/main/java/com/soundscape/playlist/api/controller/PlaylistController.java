@@ -2,11 +2,11 @@ package com.soundscape.playlist.api.controller;
 
 import com.soundscape.common.auth.context.UserContextHolder;
 import com.soundscape.common.response.CommonResponse;
-import com.soundscape.playlist.api.dto.PlaylistNameUpdateRequest;
-import com.soundscape.playlist.api.dto.PlaylistRequest;
-import com.soundscape.playlist.api.dto.PlaylistResponse;
-import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
-import com.soundscape.playlist.service.PlaylistCommand;
+import com.soundscape.playlist.api.dto.request.PlaylistNameUpdateRequest;
+import com.soundscape.playlist.api.dto.request.PlaylistRequest;
+import com.soundscape.playlist.api.dto.response.PlaylistResponse;
+import com.soundscape.playlist.api.dto.response.SimplePlaylistsResponse;
+import com.soundscape.playlist.service.command.PlaylistCommand;
 import com.soundscape.playlist.service.PlaylistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/playlists")
 @RequiredArgsConstructor
-public class PlayListController implements PlaylistControllerDoc {
+public class PlaylistController implements PlaylistControllerDoc {
 
     private final PlaylistService playlistService;
 
@@ -45,7 +45,8 @@ public class PlayListController implements PlaylistControllerDoc {
 
     @GetMapping("/{playlistId}")
     public CommonResponse getPlaylistDetails(@PathVariable Long playlistId) {
-        PlaylistResponse result = playlistService.getPlaylistDetails(playlistId);
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
+        PlaylistResponse result = playlistService.getPlaylistDetails(playlistId, userId);
         return CommonResponse.success(result);
     }
 }
