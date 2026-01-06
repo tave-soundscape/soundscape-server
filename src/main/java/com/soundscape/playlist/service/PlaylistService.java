@@ -4,8 +4,10 @@ import com.soundscape.playlist.api.dto.response.PlaylistResponse;
 import com.soundscape.playlist.api.dto.response.SimplePlaylistsResponse;
 import com.soundscape.playlist.domain.Playlist;
 import com.soundscape.playlist.domain.PlaylistCondition;
+import com.soundscape.playlist.domain.UserPlaylist;
 import com.soundscape.playlist.infra.spotify.SpotifyPlaylistClient;
 import com.soundscape.playlist.repository.PlaylistRepository;
+import com.soundscape.playlist.repository.UserPlaylistRepository;
 import com.soundscape.playlist.service.command.PlaylistCommand;
 import com.soundscape.playlist.service.mapper.PlaylistMapper;
 import com.soundscape.user.domain.entity.User;
@@ -28,7 +30,9 @@ public class PlaylistService {
     private final PlaylistGenerator playlistGenerator;
     private final UserReader userReader;
     private final PlaylistReader playlistReader;
+    private final UserPlaylistReader userPlaylistReader;
     private final PlaylistRepository playlistRepository;
+    private final UserPlaylistRepository userPlaylistRepository;
     private final SpotifyPlaylistClient spotifyPlaylistClient;
 
     @Transactional
@@ -57,19 +61,31 @@ public class PlaylistService {
     public void savePlaylist(Long playlistId, Long userId, String newPlaylistName) {
         User user = userReader.getUser(userId);
         Playlist playlist = playlistReader.getPlaylist(playlistId);
-        String spotifyPlaylistId = playlist.getSpotifyPlaylistId();
-        playlist.updatePlaylistName(newPlaylistName);
-        user.addPlayList(playlist);
-
-        spotifyPlaylistClient.updatePlaylistName(spotifyPlaylistId, newPlaylistName);
-        playlistRepository.save(playlist);
+        boolean existence = userPlaylistReader.checkExistence(user, playlist);
+        if (existence) {
+            UserPlaylist userPlaylist = userPlaylistReader.getUserPlaylist(user, playlist);
+            userPlaylist.updateCustomPlaylistName(newPlaylistName);
+        } else {
+            UserPlaylist userPlaylist = new UserPlaylist(user, playlist, newPlaylistName);
+            userPlaylistRepository.save(userPlaylist);
+        }
     }
 
     @Transactional(readOnly = true)
-    public PlaylistResponse getPlaylistDetails(Long playlistId) {
+    public PlaylistResponse getPlaylistDetails(Long playlistId, Long userId) {
         Playlist playlist = playlistReader.getPlaylist(playlistId);
         String spotifyPlaylistId = playlist.getSpotifyPlaylistId();
         var spotifyPlaylistDetails = fetchSpotifyPlaylist(spotifyPlaylistId);
+
+        String playlistName = playlist.getPlaylistName();
+        if (userId != null) {
+            User user = userReader.getUser(userId);
+            boolean isSaved = userPlaylistReader.checkExistence(user, playlist);
+            if (isSaved) {
+                UserPlaylist userPlaylist = userPlaylistReader.getUserPlaylist(user, playlist);
+                playlistName = userPlaylist.getCustomPlaylistName();
+            }
+        }
 
         List<PlaylistResponse.Song> songs = Arrays.stream(spotifyPlaylistDetails.getTracks().getItems())
                 .map(item -> {
@@ -85,7 +101,7 @@ public class PlaylistService {
 
         return PlaylistResponse.builder()
                 .playlistId(playlist.getId())
-                .playlistName(playlist.getPlaylistName())
+                .playlistName(playlistName)
                 .spotifyPlaylistId(spotifyPlaylistId)
                 .playlistUrl(playlist.getPlaylistUrl())
                 .songs(songs)
@@ -96,7 +112,7 @@ public class PlaylistService {
     public SimplePlaylistsResponse getUserPlaylists(Long userId, int page, int size) {
         PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         User user = userReader.getUser(userId);
-        Slice<Playlist> userPlaylists = playlistRepository.findAllByUser(user, pageable);
+        Slice<UserPlaylist> userPlaylists = userPlaylistRepository.findAllByUser(user, pageable);
         List<SimplePlaylistsResponse.SimpleInfo> simpleList = userPlaylists.getContent().stream()
                 .map(SimplePlaylistsResponse.SimpleInfo::new)
                 .toList();

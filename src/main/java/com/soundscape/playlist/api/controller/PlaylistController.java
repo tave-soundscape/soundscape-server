@@ -45,7 +45,8 @@ public class PlaylistController implements PlaylistControllerDoc {
 
     @GetMapping("/{playlistId}")
     public CommonResponse getPlaylistDetails(@PathVariable Long playlistId) {
-        PlaylistResponse result = playlistService.getPlaylistDetails(playlistId);
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
+        PlaylistResponse result = playlistService.getPlaylistDetails(playlistId, userId);
         return CommonResponse.success(result);
     }
 }
