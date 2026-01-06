@@ -10,6 +10,6 @@ public class PlaylistNotFoundException extends EntityNotFoundException {
     }
 
     public PlaylistNotFoundException(String message) {
-        super(message, ErrorCode.USER_NOT_FOUND);
+        super(message, ErrorCode.PLAYLIST_NOT_FOUND);
     }
 }
