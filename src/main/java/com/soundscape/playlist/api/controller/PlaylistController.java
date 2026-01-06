@@ -2,11 +2,11 @@ package com.soundscape.playlist.api.controller;
 
 import com.soundscape.common.auth.context.UserContextHolder;
 import com.soundscape.common.response.CommonResponse;
-import com.soundscape.playlist.api.dto.PlaylistNameUpdateRequest;
-import com.soundscape.playlist.api.dto.PlaylistRequest;
-import com.soundscape.playlist.api.dto.PlaylistResponse;
-import com.soundscape.playlist.api.dto.SimplePlaylistsResponse;
-import com.soundscape.playlist.service.PlaylistCommand;
+import com.soundscape.playlist.api.dto.request.PlaylistNameUpdateRequest;
+import com.soundscape.playlist.api.dto.request.PlaylistRequest;
+import com.soundscape.playlist.api.dto.response.PlaylistResponse;
+import com.soundscape.playlist.api.dto.response.SimplePlaylistsResponse;
+import com.soundscape.playlist.service.command.PlaylistCommand;
 import com.soundscape.playlist.service.PlaylistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
