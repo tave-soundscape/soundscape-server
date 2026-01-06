@@ -1,6 +1,6 @@
 package com.soundscape.playlist.api.dto.response;
 
-import com.soundscape.playlist.domain.Playlist;
+import com.soundscape.playlist.domain.UserPlaylist;
 import lombok.Getter;
 
 import java.util.List;
@@ -21,9 +21,9 @@ public class SimplePlaylistsResponse {
         private final Long playlistId;
         private final String playlistName;
 
-        public SimpleInfo(Playlist playlist) {
-            playlistId = playlist.getId();
-            playlistName = playlist.getPlaylistName();
+        public SimpleInfo(UserPlaylist userPlaylist) {
+            playlistId = userPlaylist.getPlaylist().getId();
+            playlistName = userPlaylist.getCustomPlaylistName();
         }
     }
 }
