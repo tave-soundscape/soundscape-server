@@ -1,5 +1,6 @@
-package com.soundscape.playlist.service;
+package com.soundscape.playlist.infra.engine.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,7 +14,8 @@ public class EngineRequest {
     @Getter
     @AllArgsConstructor
     public static class Input {
-        private UserContext user_context;
+        @JsonProperty("user_context")
+        private UserContext userContext;
         private List<Object> messages;
     }
 

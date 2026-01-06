@@ -1,5 +1,6 @@
-package com.soundscape.playlist.service;
+package com.soundscape.playlist.infra.engine.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,7 +20,8 @@ public class EngineResponse {
     @ToString
     public static class OutputData {
         // server.py 지정한 output_type의 필드명
-        private List<TrackDto> final_tracks;
+        @JsonProperty("final_tracks")
+        private List<TrackDto> finalTracks;
     }
 
     @Getter

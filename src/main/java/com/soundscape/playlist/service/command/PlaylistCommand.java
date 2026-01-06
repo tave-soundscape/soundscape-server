@@ -1,4 +1,4 @@
-package com.soundscape.playlist.service;
+package com.soundscape.playlist.service.command;
 
 import lombok.Getter;
 
