@@ -24,7 +24,10 @@ public enum ErrorCode {
     JWT_ERROR("토큰 처리 중 오류가 발생했습니다."),
 
     // Playlist
-    PLAYLIST_NOT_FOUND("존재하지 않는 플레이리스트입니다");
+    PLAYLIST_NOT_FOUND("존재하지 않는 플레이리스트입니다"),
+
+    //UserPlaylist
+    USER_PLAYLIST_NOT_FOUND("존재하지 않는 유저 플레이리스트입니다: %s");
 
     private final String errorMsg;
 
