@@ -1,6 +1,7 @@
-package com.soundscape.playlist.api.dto;
+package com.soundscape.playlist.api.dto.request;
 
-import com.soundscape.playlist.service.PlaylistCommand;
+import com.soundscape.playlist.service.command.PlaylistCommand;
+import com.soundscape.playlist.service.util.DecibelClassifier;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -15,11 +16,7 @@ public class PlaylistRequest {
     private String goal;
 
     public PlaylistCommand toCommand() {
-        String decibelCategory;
-        if (decibel <= 50) decibelCategory = "quiet";
-        else if (decibel <= 70) decibelCategory = "moderate";
-        else decibelCategory = "loud";
-
+        String decibelCategory = DecibelClassifier.categorize(decibel);
         return new PlaylistCommand(location, decibelCategory, goal);
     }
 }

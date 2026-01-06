@@ -1,4 +1,4 @@
-package com.soundscape.playlist.api.dto;
+package com.soundscape.playlist.api.dto.response;
 
 import com.soundscape.playlist.domain.Playlist;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.soundscape.playlist.api.dto;
+package com.soundscape.playlist.api.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
