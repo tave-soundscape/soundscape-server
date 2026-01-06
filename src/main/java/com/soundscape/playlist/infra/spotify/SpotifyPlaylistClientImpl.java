@@ -2,7 +2,6 @@ package com.soundscape.playlist.infra.spotify;
 
 import com.soundscape.common.factory.SpotifyApiFactory;
 import com.soundscape.playlist.exception.SpotifyApiException;
-import com.soundscape.playlist.infra.dto.SpotifyPlaylistInfo;
 import com.soundscape.playlist.service.util.PlaylistConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

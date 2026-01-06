@@ -1,6 +1,5 @@
 package com.soundscape.playlist.infra.spotify;
 
-import com.soundscape.playlist.infra.dto.SpotifyPlaylistInfo;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 
 public interface SpotifyPlaylistClient {
