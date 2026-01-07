@@ -7,7 +7,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -59,5 +62,14 @@ public class CommonControllerAdvice {
     public CommonResponse httpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.warn("[HttpMessageNotReadableException] message = {}", e.getMessage());
         return CommonResponse.fail("입력 형식이 올바르지 않습니다.", ErrorCode.COMMON_INVALID_PARAMETER.name());
+    }
+
+    // http status: 404, result: FAIL
+    // 존재하지 않는 경로 요청 처리
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(value = {NoResourceFoundException.class})
+    public CommonResponse onNoResourceFoundException(Exception e) {
+        log.warn("[404 Not Found] not found path requested. message = {}", e.getMessage());
+        return CommonResponse.fail("존재하지 않는 경로입니다.", "NOT_FOUND");
     }
 }
