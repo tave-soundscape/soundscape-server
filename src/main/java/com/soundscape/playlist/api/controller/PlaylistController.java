@@ -4,11 +4,14 @@ import com.soundscape.common.auth.context.UserContextHolder;
 import com.soundscape.common.response.CommonResponse;
 import com.soundscape.playlist.api.dto.request.PlaylistNameUpdateRequest;
 import com.soundscape.playlist.api.dto.request.PlaylistRequest;
+import com.soundscape.playlist.api.dto.response.PlaylistExploreListResponse;
 import com.soundscape.playlist.api.dto.response.PlaylistResponse;
 import com.soundscape.playlist.api.dto.response.SimplePlaylistsResponse;
-import com.soundscape.playlist.service.command.PlaylistCommand;
 import com.soundscape.playlist.service.PlaylistService;
+import com.soundscape.playlist.service.command.PlaylistCommand;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -47,6 +50,39 @@ public class PlaylistController implements PlaylistControllerDoc {
     public CommonResponse getPlaylistDetails(@PathVariable Long playlistId) {
         Long userId = Long.valueOf(UserContextHolder.getUserContext());
         PlaylistResponse result = playlistService.getPlaylistDetails(playlistId, userId);
+        return CommonResponse.success(result);
+    }
+
+    @GetMapping("/explore/location/{location}")
+    public CommonResponse<PlaylistExploreListResponse> exploreByLocation(
+            @PathVariable String location,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        PlaylistExploreListResponse result = playlistService.exploreByLocation(location, pageable);
+        return CommonResponse.success(result);
+    }
+
+    @GetMapping("/explore/goal/{goal}")
+    public CommonResponse<PlaylistExploreListResponse> exploreByGoal(
+            @PathVariable String goal,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        PlaylistExploreListResponse result = playlistService.exploreByGoal(goal, pageable);
+        return CommonResponse.success(result);
+    }
+
+    @GetMapping("/explore/decibel/{decibel}")
+    public CommonResponse<PlaylistExploreListResponse> exploreByDecibel(
+            @PathVariable String decibel,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        PlaylistExploreListResponse result = playlistService.exploreByDecibel(decibel, pageable);
         return CommonResponse.success(result);
     }
 }
