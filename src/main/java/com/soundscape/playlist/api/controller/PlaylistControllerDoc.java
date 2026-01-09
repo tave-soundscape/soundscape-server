@@ -22,11 +22,11 @@ public interface PlaylistControllerDoc {
     CommonResponse<SimplePlaylistsResponse> getUserPlaylists(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
     @Operation(summary = "플레이리스트 상세 조회 API", description = "특정 플레이리스트의 상세 정보를 조회합니다.")
     CommonResponse getPlaylistDetails(@PathVariable Long playlistId);
-    @Operation(summary = "장소별 플레이리스트 탐색 API", description = "특정 장소와 관련된 플레이리스트를 탐색합니다.")
+    @Operation(summary = "장소별 플레이리스트 탐색 API", description = "특정 장소와 관련된 플레이리스트를 탐색합니다.<br><br>가능한 값들: <br>gym, cafe, moving, library, home, park, co-working")
     CommonResponse<PlaylistExploreListResponse> exploreByLocation(@PathVariable String location, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
-    @Operation(summary = "목표별 플레이리스트 탐색 API", description = "특정 목표와 관련된 플레이리스트를 탐색합니다.")
+    @Operation(summary = "목표별 플레이리스트 탐색 API", description = "특정 목표와 관련된 플레이리스트를 탐색합니다.<br><br>가능한 값들: <br>quiet, moderate, loud")
     CommonResponse<PlaylistExploreListResponse> exploreByGoal(@PathVariable String goal, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
-    @Operation(summary = "소음 정도별 플레이리스트 탐색 API", description = "특정 소음 정도와 관련된 플레이리스트를 탐색합니다.")
+    @Operation(summary = "소음 정도별 플레이리스트 탐색 API", description = "특정 소음 정도와 관련된 플레이리스트를 탐색합니다.<br><br>가능한 값들: <br>focus, relax, sleep, active, anger, consolation, neutral")
     CommonResponse<PlaylistExploreListResponse> exploreByDecibel(@PathVariable String decibel, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
 }
 
