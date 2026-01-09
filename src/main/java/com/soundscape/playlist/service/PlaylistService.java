@@ -1,5 +1,6 @@
 package com.soundscape.playlist.service;
 
+import com.soundscape.playlist.api.dto.response.PlaylistExploreListResponse;
 import com.soundscape.playlist.api.dto.response.PlaylistResponse;
 import com.soundscape.playlist.api.dto.response.SimplePlaylistsResponse;
 import com.soundscape.playlist.domain.Playlist;
@@ -14,12 +15,14 @@ import com.soundscape.user.domain.entity.User;
 import com.soundscape.user.service.UserReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -118,6 +121,63 @@ public class PlaylistService {
                 .toList();
 
         return new SimplePlaylistsResponse(simpleList, userPlaylists.hasNext());
+    }
+
+    @Transactional(readOnly = true)
+    public PlaylistExploreListResponse exploreByLocation(String location, Pageable pageable) {
+        LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+        Slice<Playlist> playlists = playlistRepository.findByLocation(location, oneDayAgo, pageable);
+        List<PlaylistExploreListResponse.PlaylistExploreResponse> exploreList = playlists.getContent().stream()
+                .map(playlist -> {
+                    int saveCount = playlistRepository.countSavesByPlaylistId(playlist.getId());
+                    return new PlaylistExploreListResponse.PlaylistExploreResponse(
+                            playlist.getId(),
+                            playlist.getPlaylistName(),
+                            playlist.getPlaylistUrl(),
+                            saveCount
+                    );
+                })
+                .toList();
+
+        return new PlaylistExploreListResponse(exploreList, playlists.hasNext());
+    }
+
+    @Transactional(readOnly = true)
+    public PlaylistExploreListResponse exploreByGoal(String goal, Pageable pageable) {
+        LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+        Slice<Playlist> playlists = playlistRepository.findByGoal(goal, oneDayAgo, pageable);
+        List<PlaylistExploreListResponse.PlaylistExploreResponse> exploreList = playlists.getContent().stream()
+                .map(playlist -> {
+                    int saveCount = playlistRepository.countSavesByPlaylistId(playlist.getId());
+                    return new PlaylistExploreListResponse.PlaylistExploreResponse(
+                            playlist.getId(),
+                            playlist.getPlaylistName(),
+                            playlist.getPlaylistUrl(),
+                            saveCount
+                    );
+                })
+                .toList();
+
+        return new PlaylistExploreListResponse(exploreList, playlists.hasNext());
+    }
+
+    @Transactional(readOnly = true)
+    public PlaylistExploreListResponse exploreByDecibel(String decibel, Pageable pageable) {
+        LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+        Slice<Playlist> playlists = playlistRepository.findByDecibel(decibel, oneDayAgo, pageable);
+        List<PlaylistExploreListResponse.PlaylistExploreResponse> exploreList = playlists.getContent().stream()
+                .map(playlist -> {
+                    int saveCount = playlistRepository.countSavesByPlaylistId(playlist.getId());
+                    return new PlaylistExploreListResponse.PlaylistExploreResponse(
+                            playlist.getId(),
+                            playlist.getPlaylistName(),
+                            playlist.getPlaylistUrl(),
+                            saveCount
+                    );
+                })
+                .toList();
+
+        return new PlaylistExploreListResponse(exploreList, playlists.hasNext());
     }
 
     private se.michaelthelin.spotify.model_objects.specification.Playlist fetchSpotifyPlaylist(String spotifyPlaylistId) {
