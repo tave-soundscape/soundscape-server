@@ -3,6 +3,7 @@ package com.soundscape.playlist.api.controller;
 import com.soundscape.common.response.CommonResponse;
 import com.soundscape.playlist.api.dto.request.PlaylistNameUpdateRequest;
 import com.soundscape.playlist.api.dto.request.PlaylistRequest;
+import com.soundscape.playlist.api.dto.response.PlaylistExploreListResponse;
 import com.soundscape.playlist.api.dto.response.PlaylistResponse;
 import com.soundscape.playlist.api.dto.response.SimplePlaylistsResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,5 +22,11 @@ public interface PlaylistControllerDoc {
     CommonResponse<SimplePlaylistsResponse> getUserPlaylists(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
     @Operation(summary = "플레이리스트 상세 조회 API", description = "특정 플레이리스트의 상세 정보를 조회합니다.")
     CommonResponse getPlaylistDetails(@PathVariable Long playlistId);
+    @Operation(summary = "장소별 플레이리스트 탐색 API", description = "특정 장소와 관련된 플레이리스트를 탐색합니다.")
+    CommonResponse<PlaylistExploreListResponse> exploreByLocation(@PathVariable String location, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
+    @Operation(summary = "목표별 플레이리스트 탐색 API", description = "특정 목표와 관련된 플레이리스트를 탐색합니다.")
+    CommonResponse<PlaylistExploreListResponse> exploreByGoal(@PathVariable String goal, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
+    @Operation(summary = "소음 정도별 플레이리스트 탐색 API", description = "특정 소음 정도와 관련된 플레이리스트를 탐색합니다.")
+    CommonResponse<PlaylistExploreListResponse> exploreByDecibel(@PathVariable String decibel, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
 }
 
