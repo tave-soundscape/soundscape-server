@@ -76,6 +76,14 @@ public class PlaylistService {
         }
     }
 
+    @Transactional
+    public void unsavePlaylist(Long userId, Long playlistId) {
+        User user = userReader.getUser(userId);
+        Playlist playlist = playlistReader.getPlaylist(playlistId);
+        UserPlaylist userPlaylist = userPlaylistReader.getUserPlaylist(user, playlist);
+        userPlaylistRepository.delete(userPlaylist);
+    }
+
     @Transactional(readOnly = true)
     public PlaylistResponse getPlaylistDetails(Long playlistId, Long userId) {
         Playlist playlist = playlistReader.getPlaylist(playlistId);

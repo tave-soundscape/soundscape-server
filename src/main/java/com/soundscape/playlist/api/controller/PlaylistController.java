@@ -29,11 +29,18 @@ public class PlaylistController implements PlaylistControllerDoc {
         return CommonResponse.success(result);
     }
 
-    @PatchMapping("/{playlistId}")
+    @PostMapping("/{playlistId}")
     public CommonResponse savePlaylist(@PathVariable Long playlistId, @RequestBody PlaylistNameUpdateRequest newPlaylistName) {
         Long userId = Long.valueOf(UserContextHolder.getUserContext());
         playlistService.savePlaylist(playlistId, userId, newPlaylistName.getNewPlaylistName());
         return CommonResponse.success("playlist ID: " + playlistId, "플레이리스트가 저장되었습니다.");
+    }
+
+    @DeleteMapping("/{playlistId}")
+    public CommonResponse unsavePlaylist(@PathVariable Long playlistId) {
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
+        playlistService.unsavePlaylist(userId, playlistId);
+        return CommonResponse.success("playlist ID: " + playlistId, "유저의 저장된 플레이리스트에서 삭제 되었습니다.");
     }
 
     @GetMapping
