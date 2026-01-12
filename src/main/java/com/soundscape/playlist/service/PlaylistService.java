@@ -39,9 +39,9 @@ public class PlaylistService {
     private final SpotifyPlaylistClient spotifyPlaylistClient;
 
     @Transactional
-    public PlaylistResponse generatePlaylist(PlaylistCommand command) {
-
-        PlaylistResponse result = playlistGenerator.generate(command);
+    public PlaylistResponse generatePlaylist(Long userId, PlaylistCommand command) {
+        List<String> favArtists = userReader.getUser(userId).getFavArtists();
+        PlaylistResponse result = playlistGenerator.generate(command, favArtists);
         PlaylistCondition playlistCondition = new PlaylistCondition(command.getLocation(), command.getDecibel(), command.getGoal());
         Playlist playlist = new Playlist(
                 result.getPlaylistName(),
