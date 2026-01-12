@@ -27,9 +27,9 @@ public class PlaylistGenerator {
     private final MusicEngineClient musicEngineClient;
     private final SpotifyPlaylistClient spotifyPlaylistClient;
 
-    public PlaylistResponse generate(PlaylistCommand command) {
+    public PlaylistResponse generate(PlaylistCommand command, List<String> favArtists) {
         // 추천 엔진 호출
-        EngineResponse engineResponse = musicEngineClient.recommend(command);
+        EngineResponse engineResponse = musicEngineClient.recommend(command, favArtists);
         List<EngineResponse.TrackDto> engineTracks = engineResponse.getOutput().getFinalTracks();
 
         // 플레이리스트 이름 생성
