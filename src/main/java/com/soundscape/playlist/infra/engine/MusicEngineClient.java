@@ -20,13 +20,14 @@ public class MusicEngineClient {
     @Value("${soundscape.music-agent}")
     private String musicAgentUrl;
 
-    public EngineResponse recommend(PlaylistCommand command) {
+    public EngineResponse recommend(PlaylistCommand command, List<String> favArtists) {
         EngineRequest engineRequest = new EngineRequest(
                 new EngineRequest.Input(
                         new EngineRequest.UserContext(
                                 command.getLocation().toLowerCase(),
                                 command.getGoal().toLowerCase(),
-                                command.getDecibel().toLowerCase()
+                                command.getDecibel().toLowerCase(),
+                                favArtists
                         ),
                         List.of()
                 )

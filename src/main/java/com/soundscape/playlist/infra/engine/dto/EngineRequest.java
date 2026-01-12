@@ -25,5 +25,7 @@ public class EngineRequest {
         private String location;
         private String goal;
         private String decibel;
+        @JsonProperty("preferred_artists")
+        private final List<String> fav_artists;
     }
 }
