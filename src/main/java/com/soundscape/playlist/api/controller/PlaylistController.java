@@ -23,8 +23,9 @@ public class PlaylistController implements PlaylistControllerDoc {
 
     @PostMapping
     public CommonResponse<PlaylistResponse> generatePlaylist(@RequestBody PlaylistRequest request) {
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
         PlaylistCommand command = request.toCommand();
-        PlaylistResponse result = playlistService.generatePlaylist(command);
+        PlaylistResponse result = playlistService.generatePlaylist(userId, command);
         return CommonResponse.success(result);
     }
 
