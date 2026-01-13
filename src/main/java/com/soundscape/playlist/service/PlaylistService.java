@@ -47,7 +47,8 @@ public class PlaylistService {
                 result.getPlaylistName(),
                 result.getPlaylistUrl(),
                 result.getSpotifyPlaylistId(),
-                playlistCondition
+                playlistCondition,
+                result.getCoverUrl()
         );
         playlistRepository.save(playlist);
 
@@ -58,6 +59,7 @@ public class PlaylistService {
                 .goal(command.getGoal())
                 .spotifyPlaylistId(result.getSpotifyPlaylistId())
                 .playlistUrl(result.getPlaylistUrl())
+                .coverUrl(result.getCoverUrl())
                 .songs(result.getSongs())
                 .build();
     }
@@ -88,7 +90,7 @@ public class PlaylistService {
     public PlaylistResponse getPlaylistDetails(Long playlistId, Long userId) {
         Playlist playlist = playlistReader.getPlaylist(playlistId);
         String spotifyPlaylistId = playlist.getSpotifyPlaylistId();
-        var spotifyPlaylistDetails = fetchSpotifyPlaylist(spotifyPlaylistId);
+        var spotifyPlaylistDetails = spotifyPlaylistClient.getPlaylistDetails(spotifyPlaylistId);
 
         String playlistName = playlist.getPlaylistName();
         if (userId != null) {
@@ -190,9 +192,5 @@ public class PlaylistService {
                 .toList();
 
         return new PlaylistExploreListResponse(exploreList, playlists.hasNext());
-    }
-
-    private se.michaelthelin.spotify.model_objects.specification.Playlist fetchSpotifyPlaylist(String spotifyPlaylistId) {
-        return spotifyPlaylistClient.getPlaylistDetails(spotifyPlaylistId);
     }
 }
