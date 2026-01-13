@@ -20,10 +20,16 @@ public class SimplePlaylistsResponse {
     public static class SimpleInfo {
         private final Long playlistId;
         private final String playlistName;
+        private final String coverUrl;
+        private final String location;
+        private final String goal;
 
         public SimpleInfo(UserPlaylist userPlaylist) {
             playlistId = userPlaylist.getPlaylist().getId();
             playlistName = userPlaylist.getCustomPlaylistName();
+            coverUrl = userPlaylist.getPlaylist().getCoverUrl();
+            location = userPlaylist.getPlaylist().getPlaylistCondition().getLocation();
+            goal = userPlaylist.getPlaylist().getPlaylistCondition().getGoal();
         }
     }
 }
