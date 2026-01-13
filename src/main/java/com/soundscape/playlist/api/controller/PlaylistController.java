@@ -29,8 +29,7 @@ public class PlaylistController implements PlaylistControllerDoc {
         return CommonResponse.success(result);
     }
 
-    // TODO: 앱 업데이트 후 PATCH -> POST 변경
-    @PatchMapping("/{playlistId}")
+    @PostMapping("/{playlistId}")
     public CommonResponse savePlaylist(@PathVariable Long playlistId, @RequestBody PlaylistNameUpdateRequest newPlaylistName) {
         Long userId = Long.valueOf(UserContextHolder.getUserContext());
         playlistService.savePlaylist(playlistId, userId, newPlaylistName.getNewPlaylistName());
