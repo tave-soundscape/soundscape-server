@@ -19,11 +19,17 @@ public class SimplePlaylistsResponse {
     @Getter
     public static class SimpleInfo {
         private final Long playlistId;
+        private final String spotifyPlaylistId;
         private final String playlistName;
+        private final String location;
+        private final String goal;
 
         public SimpleInfo(UserPlaylist userPlaylist) {
             playlistId = userPlaylist.getPlaylist().getId();
             playlistName = userPlaylist.getCustomPlaylistName();
+            spotifyPlaylistId = userPlaylist.getPlaylist().getSpotifyPlaylistId();
+            location = userPlaylist.getPlaylist().getPlaylistCondition().getLocation();
+            goal = userPlaylist.getPlaylist().getPlaylistCondition().getGoal();
         }
     }
 }
