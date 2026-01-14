@@ -22,20 +22,17 @@ public class PlaylistResponse {
     private final String spotifyPlaylistId;
     @Schema(description = "스포티파이 플레이리스트 URL", example = "https://open.spotify.com/playlist/3LgIAaE7ut3yL8s2v7JHNu?si=5f3e632c480e4a10")
     private final String playlistUrl;
-    @Schema(description = "플레이리스트 커버 이미지 url", example = "https://i.scdn.co/image/ab67616d00001e020490e8ab48790ca6e5add267")
-    private final String coverUrl;
     @Schema(description = "플레이리스트에 포함된 노래 목록")
     private final List<Song> songs;
 
     @Builder
-    public PlaylistResponse(Long playlistId, String playlistName, String location, String goal, String spotifyPlaylistId, String playlistUrl, String coverUrl, List<Song> songs) {
+    public PlaylistResponse(Long playlistId, String playlistName, String location, String goal, String spotifyPlaylistId, String playlistUrl, List<Song> songs) {
         this.playlistId = playlistId;
         this.playlistName = playlistName;
         this.location = location;
         this.goal = goal;
         this.spotifyPlaylistId = spotifyPlaylistId;
         this.playlistUrl = playlistUrl;
-        this.coverUrl = coverUrl;
         this.songs = songs;
     }
 

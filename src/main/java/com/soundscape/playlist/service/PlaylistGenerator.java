@@ -53,13 +53,10 @@ public class PlaylistGenerator {
             // PlaylistResponse 로 가공
             List<PlaylistResponse.Song> songs = PlaylistMapper.toSongsFromEngine(engineTracks);
 
-            String coverUrl = spotifyPlaylistClient.getPlaylistDetails(playlistInfo.getPlaylistId()).getImages()[0].getUrl();
-
             return PlaylistResponse.builder()
                     .playlistName(playlistName)
                     .spotifyPlaylistId(playlistInfo.getPlaylistId())
                     .playlistUrl(playlistInfo.getPlaylistUrl())
-                    .coverUrl(coverUrl)
                     .songs(songs)
                     .build();
 

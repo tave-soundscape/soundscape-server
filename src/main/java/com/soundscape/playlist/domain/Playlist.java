@@ -27,9 +27,6 @@ public class Playlist extends BaseTimeEntity {
     @Column(length = 2048)
     private String playlistUrl;
 
-    @Column(length = 2048)
-    private String coverUrl;
-
     @Embedded
     private PlaylistCondition playlistCondition;
 
@@ -37,12 +34,11 @@ public class Playlist extends BaseTimeEntity {
     private List<UserPlaylist> userPlaylists = new ArrayList<>();
 
     @Builder
-    public Playlist(String playlistName, String playlistUrl, String spotifyPlaylistId, PlaylistCondition playlistCondition, String coverUrl) {
+    public Playlist(String playlistName, String playlistUrl, String spotifyPlaylistId, PlaylistCondition playlistCondition) {
         this.playlistName = playlistName;
         this.playlistUrl = playlistUrl;
         this.spotifyPlaylistId = spotifyPlaylistId;
         this.playlistCondition = playlistCondition;
-        this.coverUrl = coverUrl;
     }
 
     public void updatePlaylistName(String newPlaylistName) {

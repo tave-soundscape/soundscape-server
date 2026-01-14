@@ -47,8 +47,7 @@ public class PlaylistService {
                 result.getPlaylistName(),
                 result.getPlaylistUrl(),
                 result.getSpotifyPlaylistId(),
-                playlistCondition,
-                result.getCoverUrl()
+                playlistCondition
         );
         playlistRepository.save(playlist);
 
@@ -59,7 +58,6 @@ public class PlaylistService {
                 .goal(command.getGoal())
                 .spotifyPlaylistId(result.getSpotifyPlaylistId())
                 .playlistUrl(result.getPlaylistUrl())
-                .coverUrl(result.getCoverUrl())
                 .songs(result.getSongs())
                 .build();
     }
