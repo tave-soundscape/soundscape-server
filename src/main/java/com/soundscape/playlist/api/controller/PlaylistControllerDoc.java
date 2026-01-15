@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface PlaylistControllerDoc {
     @Operation(summary = "플레이리스트 생성 API", description = "사용자 입력값을 바탕으로 스포티파이 플레이리스트를 생성합니다.")
     CommonResponse<PlaylistResponse> generatePlaylist(@RequestBody PlaylistRequest request);
+    @Operation(summary = "비동기 플레이리스트 생성 API", description = "사용자 입력값을 바탕으로 스포티파이 플레이리스트 생성 작업을 비동기로 시작합니다.")
+    CommonResponse generatePlaylistAsync(@RequestBody PlaylistRequest request);
+    @Operation(summary = "플레이리스트 생성 작업 상태 확인 API", description = "비동기 플레이리스트 생성 작업의 상태를 확인합니다. 생성이 완료되면 플레이리스트 정보를 반환합니다.")
+    CommonResponse checkPlaylistTask(@PathVariable String taskId);
     @Operation(summary = "플레이리스트 이름 수정 및 라이브러리 저장 API", description = "플레이리스트 이름을 수정하고 사용자의 라이브러리에 저장합니다.")
     CommonResponse savePlaylist(@PathVariable Long playlistId, @RequestBody PlaylistNameUpdateRequest newPlaylistName);
     @Operation(summary = "플레이리스트 라이브러리에서 삭제 API", description = "사용자의 라이브러리에서 플레이리스트를 삭제합니다.")

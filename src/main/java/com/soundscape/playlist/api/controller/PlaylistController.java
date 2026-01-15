@@ -6,26 +6,45 @@ import com.soundscape.playlist.api.dto.request.PlaylistNameUpdateRequest;
 import com.soundscape.playlist.api.dto.request.PlaylistRequest;
 import com.soundscape.playlist.api.dto.response.PlaylistExploreListResponse;
 import com.soundscape.playlist.api.dto.response.PlaylistResponse;
+import com.soundscape.playlist.api.dto.response.PlaylistTaskStatusResponse;
 import com.soundscape.playlist.api.dto.response.SimplePlaylistsResponse;
+import com.soundscape.playlist.service.PlaylistGenerationService;
 import com.soundscape.playlist.service.PlaylistService;
 import com.soundscape.playlist.service.command.PlaylistCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 @RestController
 @RequestMapping("/api/v1/playlists")
 @RequiredArgsConstructor
 public class PlaylistController implements PlaylistControllerDoc {
 
     private final PlaylistService playlistService;
+    private final PlaylistGenerationService playlistGenerationService;
 
     @PostMapping
     public CommonResponse<PlaylistResponse> generatePlaylist(@RequestBody PlaylistRequest request) {
         Long userId = Long.valueOf(UserContextHolder.getUserContext());
         PlaylistCommand command = request.toCommand();
         PlaylistResponse result = playlistService.generatePlaylist(userId, command);
+        return CommonResponse.success(result);
+    }
+
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping("/async")
+    public CommonResponse generatePlaylistAsync(@RequestBody PlaylistRequest request) {
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
+        PlaylistCommand command = request.toCommand();
+        String taskId = playlistService.createTask(userId, command);
+        return CommonResponse.success("플레이리스트 생성 작업이 시작되었습니다. taskId: " + taskId);
+    }
+
+    @GetMapping("/tasks/{taskId}")
+    public CommonResponse checkPlaylistTask(@PathVariable String taskId) {
+        Long userId = Long.valueOf(UserContextHolder.getUserContext());
+        PlaylistTaskStatusResponse result = playlistGenerationService.getTaskStatus(taskId, userId);
         return CommonResponse.success(result);
     }
 
