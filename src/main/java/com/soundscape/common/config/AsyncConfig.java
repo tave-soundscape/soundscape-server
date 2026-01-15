@@ -1,0 +1,23 @@
+package com.soundscape.common.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.Executor;
+@Configuration
+@EnableAsync
+public class AsyncConfig {
+
+    @Bean(name = "asyncExecutor")
+    public Executor threadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+        taskExecutor.setCorePoolSize(8);
+        taskExecutor.setMaxPoolSize(18);
+        taskExecutor.setQueueCapacity(0);
+        taskExecutor.setThreadNamePrefix("AsyncExecutor-");
+        taskExecutor.initialize();
+        return taskExecutor;
+    }
+}
