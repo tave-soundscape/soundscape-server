@@ -25,6 +25,7 @@ public enum ErrorCode {
 
     // Playlist
     PLAYLIST_NOT_FOUND("존재하지 않는 플레이리스트입니다"),
+    PLAYLIST_GENERATION_TASK_NOT_FOUND("존재하지 않는 플레이리스트 생성 작업입니다."),
 
     //UserPlaylist
     USER_PLAYLIST_NOT_FOUND("존재하지 않는 유저 플레이리스트입니다: %s");

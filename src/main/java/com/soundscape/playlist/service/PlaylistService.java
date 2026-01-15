@@ -1,12 +1,15 @@
 package com.soundscape.playlist.service;
 
+import com.soundscape.common.util.IdentifierGenerator;
 import com.soundscape.playlist.api.dto.response.PlaylistExploreListResponse;
 import com.soundscape.playlist.api.dto.response.PlaylistResponse;
 import com.soundscape.playlist.api.dto.response.SimplePlaylistsResponse;
 import com.soundscape.playlist.domain.Playlist;
 import com.soundscape.playlist.domain.PlaylistCondition;
+import com.soundscape.playlist.domain.PlaylistGenerationTask;
 import com.soundscape.playlist.domain.UserPlaylist;
 import com.soundscape.playlist.infra.spotify.SpotifyPlaylistClient;
+import com.soundscape.playlist.repository.PlaylistGenerationTaskRepository;
 import com.soundscape.playlist.repository.PlaylistRepository;
 import com.soundscape.playlist.repository.UserPlaylistRepository;
 import com.soundscape.playlist.service.command.PlaylistCommand;
@@ -31,12 +34,15 @@ import java.util.List;
 public class PlaylistService {
 
     private final PlaylistGenerator playlistGenerator;
-    private final UserReader userReader;
+    private final PlaylistGenerationService playlistGenerationService;
+    private final SpotifyPlaylistClient spotifyPlaylistClient;
     private final PlaylistReader playlistReader;
+    private final UserReader userReader;
     private final UserPlaylistReader userPlaylistReader;
+    private final TaskReader taskReader;
     private final PlaylistRepository playlistRepository;
     private final UserPlaylistRepository userPlaylistRepository;
-    private final SpotifyPlaylistClient spotifyPlaylistClient;
+    private final PlaylistGenerationTaskRepository playlistGenerationTaskRepository;
 
     @Transactional
     public PlaylistResponse generatePlaylist(Long userId, PlaylistCommand command) {
@@ -60,6 +66,15 @@ public class PlaylistService {
                 .playlistUrl(result.getPlaylistUrl())
                 .songs(result.getSongs())
                 .build();
+    }
+
+    @Transactional
+    public String createTask(Long userId, PlaylistCommand command) {
+        String taskId = IdentifierGenerator.generateWithPrefix("task_");
+        PlaylistGenerationTask playlistGenerationTask = new PlaylistGenerationTask(taskId, userId);
+        playlistGenerationTaskRepository.save(playlistGenerationTask);
+        playlistGenerationService.executeGeneration(userId, taskId, command);
+        return taskId;
     }
 
     @Transactional
