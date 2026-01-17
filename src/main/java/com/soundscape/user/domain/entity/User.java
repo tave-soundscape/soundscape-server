@@ -41,6 +41,12 @@ public class User extends BaseTimeEntity {
     @Column(name = "is_onboarded", nullable = false)
     private boolean isOnboarded;
 
+    @Column(name = "likes_spotify_playlist_id")
+    private String likesSpotifyPlaylistId;
+
+    @Column(name = "likes_count", nullable = false)
+    private int likesCount = 0;
+
     public User(String oid) {
         this.oid = oid;
         this.isOnboarded = false;
@@ -61,4 +67,10 @@ public class User extends BaseTimeEntity {
     public void markOnboarded() {
         this.isOnboarded = true;
     }
+
+    public void updateLikesSpotifyPlaylistId(String playlistId) { this.likesSpotifyPlaylistId = playlistId; }
+
+    public void increaseLikesCount() { this.likesCount += 1; }
+
+    public void decreaseLikesCount() { if (this.likesCount > 0) this.likesCount -= 1; }
 }

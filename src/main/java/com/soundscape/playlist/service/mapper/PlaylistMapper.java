@@ -24,6 +24,7 @@ public class PlaylistMapper {
                         .spotifyUrl(t.getTurl())
                         .imageUrl(t.getImg())
                         .duration(DurationFormatter.format(t.getMs()))
+                        .liked(false)
                         .build())
                 .toList();
     }
@@ -42,6 +43,7 @@ public class PlaylistMapper {
                 .spotifyUrl(track.getExternalUrls().get("spotify"))
                 .imageUrl(track.getAlbum().getImages().length > 0 ? track.getAlbum().getImages()[0].getUrl() : null)
                 .duration(DurationFormatter.format(track.getDurationMs()))
+                .liked(false)
                 .build();
     }
 }

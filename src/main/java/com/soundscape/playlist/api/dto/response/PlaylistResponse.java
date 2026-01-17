@@ -54,5 +54,7 @@ public class PlaylistResponse {
         private final String imageUrl; //엔진의 img
         @Schema(description = "노래 재생 시간", example = "2:54")
         private final String duration; //엔진의 ms를 포맷팅
+        @Schema(description = "좋아요 여부", example = "true")
+        private final boolean liked;
     }
 }

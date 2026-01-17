@@ -27,7 +27,9 @@ import se.michaelthelin.spotify.model_objects.specification.Track;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -101,30 +103,55 @@ public class PlaylistService {
 
     @Transactional(readOnly = true)
     public PlaylistResponse getPlaylistDetails(Long playlistId, Long userId) {
+        // 1) playlist + spotify 상세 조회
         Playlist playlist = playlistReader.getPlaylist(playlistId);
         String spotifyPlaylistId = playlist.getSpotifyPlaylistId();
         var spotifyPlaylistDetails = spotifyPlaylistClient.getPlaylistDetails(spotifyPlaylistId);
 
+        // 2) 유저 조회 (현재 컨트롤러는 항상 userId를 넘김)
+        User user = userReader.getUser(userId);
+
+        // 3) playlistName 결정 (저장된 플레이리스트면 커스텀 이름 사용)
         String playlistName = playlist.getPlaylistName();
-        if (userId != null) {
-            User user = userReader.getUser(userId);
-            boolean isSaved = userPlaylistReader.checkExistence(user, playlist);
-            if (isSaved) {
-                UserPlaylist userPlaylist = userPlaylistReader.getUserPlaylist(user, playlist);
-                playlistName = userPlaylist.getCustomPlaylistName();
-            }
+        boolean isSaved = userPlaylistReader.checkExistence(user, playlist);
+        if (isSaved) {
+            UserPlaylist userPlaylist = userPlaylistReader.getUserPlaylist(user, playlist);
+            playlistName = userPlaylist.getCustomPlaylistName();
         }
 
+        // 4) 좋아요 플레이리스트 URI Set 구성 (옵션 1)
+        Set<String> likedUriSet = new HashSet<>();
+        String likesSpotifyPlaylistId = user.getLikesSpotifyPlaylistId();
+        if (likesSpotifyPlaylistId != null && !likesSpotifyPlaylistId.isBlank()) {
+            var likesPlaylistDetails = spotifyPlaylistClient.getPlaylistDetails(likesSpotifyPlaylistId);
+
+            Arrays.stream(likesPlaylistDetails.getTracks().getItems())
+                    .map(item -> item.getTrack())
+                    .filter(t -> t instanceof Track)
+                    .map(t -> ((Track) t).getUri())
+                    .forEach(likedUriSet::add);
+        }
+
+        // 5) 메인 플레이리스트 songs + liked 세팅
         List<PlaylistResponse.Song> songs = Arrays.stream(spotifyPlaylistDetails.getTracks().getItems())
                 .map(item -> {
                     var itemElement = item.getTrack();
                     if (itemElement instanceof Track track) {
-                        return PlaylistMapper.toSongFromSpotifyTrack(track);
+                        PlaylistResponse.Song base = PlaylistMapper.toSongFromSpotifyTrack(track);
+                        return PlaylistResponse.Song.builder()
+                                .title(base.getTitle())
+                                .artistName(base.getArtistName())
+                                .albumName(base.getAlbumName())
+                                .uri(base.getUri())
+                                .spotifyUrl(base.getSpotifyUrl())
+                                .imageUrl(base.getImageUrl())
+                                .duration(base.getDuration())
+                                .liked(likedUriSet.contains(base.getUri()))
+                                .build();
                     }
-
                     return null;
                 })
-                .filter(java.util.Objects::nonNull) // Track이 아닌 것들은 걸러냄
+                .filter(java.util.Objects::nonNull)
                 .toList();
 
         return PlaylistResponse.builder()

@@ -11,4 +11,6 @@ public interface SpotifyPlaylistClient {
     Playlist getPlaylistDetails(String playlistId);
     // 플레이리스트 이름 변경
     void updatePlaylistName(String playlistId, String newName);
+    // 좋아요 취소(트랙에서 곡 제거)
+    void removeTracksFromPlaylist(String playlistId, String[] trackUris);
 }

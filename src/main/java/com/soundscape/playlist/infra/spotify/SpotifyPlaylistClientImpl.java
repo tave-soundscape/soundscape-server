@@ -1,5 +1,7 @@
 package com.soundscape.playlist.infra.spotify;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.soundscape.common.factory.SpotifyApiFactory;
 import com.soundscape.playlist.exception.SpotifyApiException;
 import com.soundscape.playlist.service.util.PlaylistConstants;
@@ -72,6 +74,28 @@ public class SpotifyPlaylistClientImpl implements SpotifyPlaylistClient {
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             log.error("스포티파이 플레이리스트 이름 변경 실패: {}", e.getMessage());
             throw new SpotifyApiException("스포티파이 플레이리스트 이름 변경 중 오류 발생");
+        }
+    }
+
+    @Override
+    public void removeTracksFromPlaylist(String playlistId, String[] trackUris) {
+        SpotifyApi spotifyApi = spotifyApiFactory.getSpotifyApi();
+        try {
+            JsonArray tracksJson = new JsonArray();
+
+            for (String uri : trackUris) {
+                JsonObject trackObj = new JsonObject();
+                trackObj.addProperty("uri", uri);
+                tracksJson.add(trackObj);
+            }
+
+            spotifyApi.removeItemsFromPlaylist(playlistId, tracksJson)
+                    .build()
+                    .execute();
+
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            log.error("스포티파이 플레이리스트 트랙 삭제 실패: {}", e.getMessage());
+            throw new SpotifyApiException("스포티파이 플레이리스트 트랙 삭제 중 오류 발생");
         }
     }
 }
