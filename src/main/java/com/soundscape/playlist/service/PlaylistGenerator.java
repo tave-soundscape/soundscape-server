@@ -33,9 +33,12 @@ public class PlaylistGenerator {
         List<EngineResponse.TrackDto> engineTracks = engineResponse.getOutput().getFinalTracks();
 
         // 플레이리스트 이름 생성
+        String koreanLocation = PlaylistConstants.getKoreanLocation(command.getLocation());
+        String formattedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern(PlaylistConstants.PLAYLIST_DATE_FORMAT));
         String playlistName = String.format(
                 PlaylistConstants.PLAYLIST_NAME_FORMAT,
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(PlaylistConstants.PLAYLIST_DATE_FORMAT))
+                koreanLocation,
+                formattedDate
         );
 
         try {
