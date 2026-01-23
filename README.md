@@ -14,7 +14,7 @@
 
 - 동일 VPC 내에 **API 서버(Spring Boot)** 와 **추천 서버(FastAPI, LangGraph/LangServe)** 를 분리 배치
 - API 서버는 인증/유저/플레이리스트/리뷰 등 **트랜잭션과 영속성(MySQL/JPA)** 을 담당.
-- 추천/생성 로직은 외부 추천 서버에 위임, API 서버는 이를 HTTP로 호출해 결과를 저장/가공합니다.
+- 추천/생성 로직은 외부 추천 서버에 위임, API 서버는 이를 HTTP로 호출해 결과를 저장/가공.
 
 ## 코드 구조(패키지)
 - `com.soundscape.common`
@@ -38,7 +38,7 @@
 - 인증 처리는 `HandlerInterceptor`(`JwtAuthenticationInterceptor`)에서 토큰을 파싱하고, 요청 스코프 컨텍스트에 유저 식별자를 보관하는 방식.
 
 ## 외부 연동
-- Spotify Web API(Java SDK)
+- Spotify Web API (spotify-web-api-java)
 - Kakao OAuth
 - 추천 서버(FastAPI): `soundscape.music-agent` 설정으로 엔드포인트를 주입, `RestClient`로 호출.
 ---
