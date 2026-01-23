@@ -28,7 +28,10 @@ public enum ErrorCode {
     PLAYLIST_GENERATION_TASK_NOT_FOUND("존재하지 않는 플레이리스트 생성 작업입니다."),
 
     //UserPlaylist
-    USER_PLAYLIST_NOT_FOUND("존재하지 않는 유저 플레이리스트입니다: %s");
+    USER_PLAYLIST_NOT_FOUND("존재하지 않는 유저 플레이리스트입니다: %s"),
+
+    //Recommemdation server
+    ENGINE_ERROR("추천 엔진 호출 중 오류가 발생했습니다.");
 
     private final String errorMsg;
 
