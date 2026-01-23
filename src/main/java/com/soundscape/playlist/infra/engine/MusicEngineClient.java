@@ -1,9 +1,11 @@
 package com.soundscape.playlist.infra.engine;
 
+import com.soundscape.playlist.exception.EngineException;
 import com.soundscape.playlist.infra.engine.dto.EngineRequest;
 import com.soundscape.playlist.infra.engine.dto.EngineResponse;
 import com.soundscape.playlist.service.command.PlaylistCommand;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class MusicEngineClient {
 
     private final RestClient restClient;
@@ -33,11 +36,18 @@ public class MusicEngineClient {
                 )
         );
 
-        return restClient.post()
-                .uri(musicAgentUrl)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(engineRequest)
-                .retrieve()
-                .body(EngineResponse.class);
+        try {
+            EngineResponse body = restClient.post()
+                    .uri(musicAgentUrl)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(engineRequest)
+                    .retrieve()
+                    .body(EngineResponse.class);
+
+            return body;
+        } catch (Exception e) {
+            log.error("추천엔진 호출중 에러 발생");
+            throw new EngineException("추천엔진 호출중 에러 발생");
+        }
     }
 }
