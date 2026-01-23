@@ -46,7 +46,7 @@ public class MusicEngineClient {
 
             return body;
         } catch (Exception e) {
-            log.error("추천엔진 호출중 에러 발생");
+            log.error("추천엔진 호출중 에러 발생 " + e);
             throw new EngineException("추천엔진 호출중 에러 발생");
         }
     }

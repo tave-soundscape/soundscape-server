@@ -17,6 +17,7 @@ import com.soundscape.playlist.service.mapper.PlaylistMapper;
 import com.soundscape.user.domain.entity.User;
 import com.soundscape.user.service.UserReader;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -31,6 +32,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PlaylistService {
 
     private final PlaylistGenerator playlistGenerator;
@@ -47,25 +49,31 @@ public class PlaylistService {
     @Transactional
     public PlaylistResponse generatePlaylist(Long userId, PlaylistCommand command) {
         List<String> favArtists = userReader.getUser(userId).getFavArtists();
-        PlaylistResponse result = playlistGenerator.generate(command, favArtists);
-        PlaylistCondition playlistCondition = new PlaylistCondition(command.getLocation(), command.getDecibel(), command.getGoal());
-        Playlist playlist = new Playlist(
-                result.getPlaylistName(),
-                result.getPlaylistUrl(),
-                result.getSpotifyPlaylistId(),
-                playlistCondition
-        );
-        playlistRepository.save(playlist);
+        try {
+            PlaylistResponse result = playlistGenerator.generate(command, favArtists);
+            PlaylistCondition playlistCondition = new PlaylistCondition(command.getLocation(), command.getDecibel(), command.getGoal());
+            Playlist playlist = new Playlist(
+                    result.getPlaylistName(),
+                    result.getPlaylistUrl(),
+                    result.getSpotifyPlaylistId(),
+                    playlistCondition
+            );
+            playlistRepository.save(playlist);
 
-        return PlaylistResponse.builder()
-                .playlistId(playlist.getId())
-                .playlistName(result.getPlaylistName())
-                .location(command.getLocation())
-                .goal(command.getGoal())
-                .spotifyPlaylistId(result.getSpotifyPlaylistId())
-                .playlistUrl(result.getPlaylistUrl())
-                .songs(result.getSongs())
-                .build();
+            return PlaylistResponse.builder()
+                    .playlistId(playlist.getId())
+                    .playlistName(result.getPlaylistName())
+                    .location(command.getLocation())
+                    .goal(command.getGoal())
+                    .spotifyPlaylistId(result.getSpotifyPlaylistId())
+                    .playlistUrl(result.getPlaylistUrl())
+                    .songs(result.getSongs())
+                    .build();
+
+        } catch (Exception e) {
+            log.error("플레이리스트 생성 에러 발생, 기본 플레이리스트(Id: 1) 반환 " + e);
+            return getPlaylistDetails(1L, userId);
+        }
     }
 
     @Transactional

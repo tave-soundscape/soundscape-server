@@ -47,6 +47,9 @@ public class PlaylistGenerationTask extends BaseTimeEntity {
     public boolean isCompleted() {
         return this.status == TaskStatus.COMPLETED;
     }
+    public boolean isFailed() {
+        return this.status == TaskStatus.FAILED;
+    }
 
     public enum TaskStatus {
         PENDING,
